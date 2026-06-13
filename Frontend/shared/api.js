@@ -284,12 +284,29 @@ const API = {
 
             return { success: true, data: newTask };
         } else {
-            const res = await fetch(`${BACKEND_URL}/tasks`, {
-                method: 'POST',
-                headers: getHeaders(),
-                body: JSON.stringify({ title, description, priority, assignedToId, deadline, notes })
-            });
-            return await res.json();
+            try {
+                const res = await fetch(`${BACKEND_URL}/tasks`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ title, description, priority, assignedToId, deadline, notes })
+                });
+                // If backend returns non-2xx, treat as error
+                if (!res.ok) {
+                    console.warn('Backend task creation failed, status:', res.status);
+                    // fallback to mock storage
+                    isMockMode = true;
+                    initializeMockStorage();
+                    // recurse to mock path
+                    return await API.createTask(title, description, priority, assignedToId, deadline, notes);
+                }
+                return await res.json();
+            } catch (e) {
+                console.error('Error contacting backend for task creation:', e);
+                // fallback to mock mode
+                isMockMode = true;
+                initializeMockStorage();
+                return await API.createTask(title, description, priority, assignedToId, deadline, notes);
+            }
         }
     },
 

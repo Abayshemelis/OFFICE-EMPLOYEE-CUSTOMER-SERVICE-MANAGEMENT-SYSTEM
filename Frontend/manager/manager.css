@@ -4,6 +4,33 @@
     min-height: 100vh;
 }
 
+body {
+    overflow-y: auto;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.6);
+    z-index: 90;
+    overflow: hidden;
+}
+
+.glass-panel.modal-content {
+    max-width: 600px;
+    width: 90%;
+    padding: 30px;
+    border-radius: 12px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
 .sidebar {
     background: rgba(15, 23, 42, 0.6);
     border-right: 1px solid var(--panel-border);
@@ -121,8 +148,14 @@ tr:hover td {
     background: rgba(255,255,255,0.01);
 }
 
-.actions-cell {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
+.form-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

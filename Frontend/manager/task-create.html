@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS - Create Task</title>
+    <link rel="stylesheet" href="../shared/style.css">
+    <style>
+        .create-wrapper {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 20px;
+}
+.create-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    text-align: left;
+    cursor: move;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(20px);
+}
+        .create-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="create-wrapper">
+        <div class="glass-panel create-card">
+            <h2>Create New Task</h2>
+            <form id="task-form">
+                <div class="form-group">
+                    <label class="form-label" for="task-title">Title</label>
+                    <input class="form-input" type="text" id="task-title" required placeholder="Enter task title" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-desc">Description</label>
+                    <textarea class="form-input" id="task-desc" rows="3" placeholder="Task description notes..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-priority">Priority</label>
+                    <select class="form-input" id="task-priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-assignee">Assignee</label>
+                    <select class="form-input" id="task-assignee" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-deadline">Deadline</label>
+                    <input class="form-input" type="datetime-local" id="task-deadline" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-notes">Manager Notes / Guidelines</label>
+                    <textarea class="form-input" id="task-notes" rows="2" placeholder="Any specific requirements..."></textarea>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='manager-dashboard.html'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+<script src="../shared/api.js"></script>
+<script src="../shared/utils.js"></script>
+<script>
+    // Populate assignee dropdown when page loads and add placeholder
+    document.addEventListener('DOMContentLoaded', async () => {
+        const res = await API.getUsers();
+        if (!res.success) return;
+        const select = document.getElementById('task-assignee');
+        const placeholder = document.createElement('option');
+        placeholder.textContent = '-- Select Assistant --';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
+        const assistants = res.data.filter(u => u.role === 'Assistant' && u.isActive !== false);
+        assistants.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.userId;
+            opt.textContent = a.fullName;
+            select.appendChild(opt);
+        });
+        if (assistants.length === 0) {
+            const opt = document.createElement('option');
+            opt.textContent = 'No assistants available';
+            opt.disabled = true;
+            select.appendChild(opt);
+        }
+    });
+
+        // Form submission with comprehensive validation
+        document.getElementById('task-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('task-title').value.trim();
+            const desc = document.getElementById('task-desc').value.trim();
+            const priority = document.getElementById('task-priority').value;
+            const assigneeVal = document.getElementById('task-assignee').value;
+            const deadline = document.getElementById('task-deadline').value;
+            const notes = document.getElementById('task-notes').value.trim();
+
+            // Basic validation
+            if (!title) { Utils.toast('Title is required.', 'Validation', 'warning'); return; }
+            if (!priority) { Utils.toast('Priority is required.', 'Validation', 'warning'); return; }
+            if (!assigneeVal) { Utils.toast('Please select an assignee.', 'Validation', 'warning'); return; }
+            if (!deadline) { Utils.toast('Deadline is required.', 'Validation', 'warning'); return; }
+
+            const assignee = Number(assigneeVal);
+            try {
+                console.log('Creating task payload:', { title, desc, priority, assignee, deadline, notes });
+                const res = await API.createTask(title, desc, priority, assignee, deadline, notes);
+                console.log('CreateTask response:', res);
+                if (res && res.success) {
+                    Utils.toast('Task created and assigned.', 'Task Created', 'success');
+                    window.location.href = 'manager-dashboard.html';
+                } else {
+                    const msg = (res && res.message) ? res.message : 'Failed to create task.';
+                    Utils.toast(msg, 'Error Creating Task', 'danger');
+                }
+            } catch (err) {
+                console.error('Create task error:', err);
+                Utils.toast('Unexpected error occurred while creating task.', 'Error', 'danger');
+            }
+        };
+
+    // Draggable create-card implementation
+    (function() {
+        const card = document.querySelector('.create-card');
+        if (!card) return;
+        let isDragging = false, offsetX = 0, offsetY = 0;
+        card.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - card.offsetLeft;
+            offsetY = e.clientY - card.offsetTop;
+            card.style.transition = 'none';
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            card.style.left = (e.clientX - offsetX) + 'px';
+            card.style.top = (e.clientY - offsetY) + 'px';
+        });
+        document.addEventListener('mouseup', () => {
+            if (isDragging) { isDragging = false; card.style.transition = ''; }
+        });
+    })();
+</script>
+</body>
+</html>

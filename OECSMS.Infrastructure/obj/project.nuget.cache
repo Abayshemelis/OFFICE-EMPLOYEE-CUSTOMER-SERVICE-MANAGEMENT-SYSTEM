@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xT5UzBMvTN8=",
+  "dgSpecHash": "AgorgBlkUCA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj",
+  "projectFilePath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\abays\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\abays\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
@@ -72,9 +72,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "OECSMS.Infrastructure depends on Microsoft.EntityFrameworkCore (>= 8.0.9) but Microsoft.EntityFrameworkCore 8.0.9 was not found. Microsoft.EntityFrameworkCore 8.0.10 was resolved instead.",
-      "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj",
+      "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj",
+      "filePath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj",
       "libraryId": "Microsoft.EntityFrameworkCore",
       "targetGraphs": [
         "net8.0"

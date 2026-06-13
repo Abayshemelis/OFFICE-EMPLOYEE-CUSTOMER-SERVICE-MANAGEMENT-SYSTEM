@@ -53,37 +53,49 @@ async function loadTasks() {
     if (!res.success) return;
 
     const tasks = res.data;
-    const tbody = document.getElementById('task-list-body');
-    tbody.innerHTML = '';
+    const container = document.querySelector('.task-card-container');
+    if (!container) return;
+    container.innerHTML = '';
 
     if (tasks.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;" class="p">No tasks registered.</td></tr>';
+        const placeholder = document.createElement('div');
+        placeholder.className = 'p';
+        placeholder.style.padding = '20px';
+        placeholder.style.textAlign = 'center';
+        placeholder.textContent = 'No tasks registered.';
+        container.appendChild(placeholder);
         return;
     }
 
     tasks.forEach(t => {
         const isOverdue = t.status !== 'Completed' && t.status !== 'Cancelled' && t.deadline && new Date(t.deadline) < new Date();
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="font-weight:600;">${t.title} ${isOverdue ? '<span class="badge bg-danger" style="margin-left:8px;font-size:10px;">OVERDUE</span>' : ''}</td>
-            <td>${t.assignedToName || 'Unassigned'}</td>
-            <td>${Utils.getPriorityBadge(t.priority)}</td>
-            <td style="font-size:13px; color:var(--text-secondary);">${Utils.formatDate(t.deadline)}</td>
-            <td>${Utils.getStatusBadge(t.status)}</td>
-            <td>
-                <div class="actions-cell">
-                    ${t.status !== 'Completed' && t.status !== 'Cancelled' ? `
-                        <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="openReassignPrompt(${t.taskId})">Reassign</button>
-                        <button class="btn btn-danger" style="padding:5px 10px;font-size:12px;" onclick="cancelTask(${t.taskId})">Cancel</button>
-                    ` : ''}
-                    <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="showAuditLog(${t.taskId})">Logs</button>
-                </div>
-            </td>
+        const card = document.createElement('div');
+        card.className = 'glass-panel task-card';
+        card.innerHTML = `
+            <div class="task-title">
+                <strong>${t.title}</strong> ${isOverdue ? '<span class="badge bg-danger" style="margin-left:8px;font-size:10px;">OVERDUE</span>' : ''}
+            </div>
+            <div class="task-meta">
+                <p><strong>Assignee:</strong> ${t.assignedToName || 'Unassigned'}</p>
+                <p><strong>Priority:</strong> ${Utils.getPriorityBadge(t.priority)}</p>
+                <p><strong>Deadline:</strong> <span style="font-size:13px; color:var(--text-secondary);">${Utils.formatDate(t.deadline)}</span></p>
+                <p><strong>Status:</strong> ${Utils.getStatusBadge(t.status)}</p>
+            </div>
+            <div class="actions-cell" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                ${t.status !== 'Completed' && t.status !== 'Cancelled' ? `
+                    <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="openReassignPrompt(${t.taskId})">Reassign</button>
+                    <button class="btn btn-danger" style="padding:5px 10px;font-size:12px;" onclick="cancelTask(${t.taskId})">Cancel</button>
+                ` : ''}
+                <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px;" onclick="showAuditLog(${t.taskId})">Logs</button>
+            </div>
         `;
-        tbody.appendChild(tr);
+        container.appendChild(card);
     });
 }
+
+
+
+
 
 function openCreateTaskModal() {
     document.getElementById('task-modal-title').innerText = 'Create New Task';
@@ -91,11 +103,53 @@ function openCreateTaskModal() {
     document.getElementById('task-id').value = '';
     loadAssistantsDropdown();
     document.getElementById('task-modal').classList.add('active');
+    // Prevent background scrolling
+    document.body.classList.add('modal-open');
+    // Initialize draggable behavior for the modal
+    makeModalDraggable('task-modal');
 }
 
 function closeTaskModal() {
     document.getElementById('task-modal').classList.remove('active');
+    // Restore background scrolling
+    document.body.classList.remove('modal-open');
 }
+
+// Make a modal draggable by its header (or whole content)
+function makeModalDraggable(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    const content = modal.querySelector('.modal-content');
+    if (!content) return;
+    // Ensure the content can be positioned
+    content.style.position = 'absolute';
+    content.style.top = '50%';
+    content.style.left = '50%';
+    content.style.transform = 'translate(-50%, -50%)';
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+    content.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - content.offsetLeft;
+        offsetY = e.clientY - content.offsetTop;
+        content.style.transition = 'none';
+    });
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const left = e.clientX - offsetX;
+        const top = e.clientY - offsetY;
+        content.style.left = left + 'px';
+        content.style.top = top + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            content.style.transition = '';
+        }
+    });
+}
+
 
 async function loadAssistantsDropdown() {
     const res = await API.getUsers();

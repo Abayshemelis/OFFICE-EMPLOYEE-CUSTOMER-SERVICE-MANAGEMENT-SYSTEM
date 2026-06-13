@@ -4279,11 +4279,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.API\\OECSMS.API.csproj",
+      "projectUniqueName": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.API\\OECSMS.API.csproj",
       "projectName": "OECSMS.API",
-      "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.API\\OECSMS.API.csproj",
+      "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.API\\OECSMS.API.csproj",
       "packagesPath": "C:\\Users\\abays\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.API\\obj\\",
+      "outputPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\abays\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -4299,11 +4299,11 @@
           "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Application\\OECSMS.Application.csproj": {
-              "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Application\\OECSMS.Application.csproj"
+            "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Application\\OECSMS.Application.csproj": {
+              "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Application\\OECSMS.Application.csproj"
             },
-            "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj"
+            "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj"
             }
           }
         }

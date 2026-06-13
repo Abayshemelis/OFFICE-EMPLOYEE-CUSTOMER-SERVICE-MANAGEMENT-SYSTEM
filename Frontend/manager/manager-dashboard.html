@@ -51,24 +51,9 @@
                     </div>
                 </div>
 
-                <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Task Title</th>
-                                <th>Assigned To</th>
-                                <th>Priority</th>
-                                <th>Deadline</th>
-                                <th>Status</th>
-                                <th style="text-align:right;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="task-list-body">
-                            <tr>
-                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No tasks registered.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="glass-panel task-card-container">
+                    <!-- Task cards will be injected here -->
+                    <div id="tasks-placeholder" class="p" style="padding:20px; text-align:center;">No tasks registered.</div>
                 </div>
             </div>
 
@@ -207,53 +192,53 @@
         </div>
     </div>
 
-    <!-- CREATE TASK MODAL -->
-    <div class="modal-overlay" id="task-modal">
-        <div class="glass-panel modal-content">
-            <h3 id="task-modal-title">Create New Task</h3>
-            <form id="task-form">
-                <input type="hidden" id="task-id">
-                <div class="form-group">
-                    <label class="form-label" for="task-title">Title</label>
-                    <input class="form-input" type="text" id="task-title" required placeholder="Enter task title">
+<!-- CREATE TASK MODAL -->
+<div class="modal-overlay" id="task-modal">
+    <div class="glass-panel modal-content" style="max-width:600px; padding:20px;">
+        <h2 id="task-modal-title" style="margin-top:0;">Create New Task</h2>
+        <form id="task-form" style="display:flex; flex-direction:column; gap:12px;">
+            <input type="hidden" id="task-id" />
+            <div class="form-group">
+                <label class="form-label" for="task-title">Title</label>
+                <input class="form-input" type="text" id="task-title" required placeholder="Enter task title" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="task-desc">Description</label>
+                <textarea class="form-input" id="task-desc" placeholder="Task description notes..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="task-priority">Priority</label>
+                <select class="form-input" id="task-priority">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Critical">Critical</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="task-assignee">Assignee</label>
+                <select class="form-input" id="task-assignee" required>
+                    <!-- Options loaded dynamically -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="task-deadline">Deadline</label>
+                <input class="form-input" type="datetime-local" id="task-deadline" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="task-notes">Manager Notes / Guidelines</label>
+                <textarea class="form-input" id="task-notes" placeholder="Any specific requirements..." rows="2"></textarea>
+                <div class="glass-panel" style="padding:12px;margin-top:8px;border-left:4px solid var(--primary-color);">
+                    <p style="margin:0;color:var(--text-secondary);">Guideline: Ensure all requirements are clear and concise for the assistant.</p>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="task-desc">Description</label>
-                    <input class="form-input" type="text" id="task-desc" placeholder="Task description notes...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="task-priority">Priority</label>
-                    <select class="form-input" id="task-priority">
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Critical">Critical</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="task-assignee">Assignee</label>
-                    <select class="form-input" id="task-assignee" required>
-                        <!-- Options loaded dynamically -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="task-deadline">Deadline</label>
-                    <input class="form-input" type="datetime-local" id="task-deadline" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="task-notes">Manager Notes / Guidelines</label>
-                    <input class="form-input" type="text" id="task-notes" placeholder="Any specific requirements...">
-<div class="glass-panel" style="padding:15px; margin-top:10px; border-left:4px solid var(--primary-color); animation: slideIn 0.6s;">
-  <p style="margin:0; color:var(--text-secondary);">Guideline: Ensure all requirements are clear and concise for the assistant.</p>
-</div>
-                </div>
-                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
-                    <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Task</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Task</button>
+            </div>
+        </form>
     </div>
+</div>
 
     <!-- CREATE ASSISTANT MODAL -->
     <div class="modal-overlay" id="assistant-modal">

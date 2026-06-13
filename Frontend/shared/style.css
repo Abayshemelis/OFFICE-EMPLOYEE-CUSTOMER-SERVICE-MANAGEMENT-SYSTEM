@@ -226,15 +226,45 @@ p {
 
 .modal-content {
     width: 90%;
-    max-width: 500px;
-    padding: 30px;
+    max-width: 440px;
+    padding: 40px;
+    border-radius: 12px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow-y: hidden;
+    max-height: none;
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: move;
 }
 
-.modal-overlay.active .modal-content {
-    transform: scale(1);
+.modal-body {
+    padding: 15px 0;
 }
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--panel-border);
+}
+
+    /* Ensure body does not scroll when modal is active */
+    /* Ensure body scroll is locked when modal is active */
+    body.modal-open {
+        overflow: hidden;
+    }
+
+    /* Scale modal to normal size when active */
+    .modal-overlay.active .modal-content {
+        transform: scale(1);
+    }
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

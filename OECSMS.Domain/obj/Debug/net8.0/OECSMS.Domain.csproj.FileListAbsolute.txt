@@ -9,3 +9,15 @@ C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVI
 C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Domain\obj\Debug\net8.0\refint\OECSMS.Domain.dll
 C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.pdb
 C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Domain\obj\Debug\net8.0\ref\OECSMS.Domain.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\bin\Debug\net8.0\OECSMS.Domain.deps.json
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\bin\Debug\net8.0\OECSMS.Domain.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\bin\Debug\net8.0\OECSMS.Domain.pdb
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.AssemblyInfoInputs.cache
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.AssemblyInfo.cs
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.csproj.CoreCompileInputs.cache
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.sourcelink.json
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\refint\OECSMS.Domain.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\OECSMS.Domain.pdb
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.Domain\obj\Debug\net8.0\ref\OECSMS.Domain.dll

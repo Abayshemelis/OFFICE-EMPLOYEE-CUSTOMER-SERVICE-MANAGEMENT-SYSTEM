@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj": {}
+    "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj": {
+    "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj",
         "projectName": "OECSMS.Domain",
-        "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj",
+        "projectPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Domain\\OECSMS.Domain.csproj",
         "packagesPath": "C:\\Users\\abays\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\\OECSMS.Domain\\obj\\",
+        "outputPath": "C:\\Users\\abays\\OneDrive\\Documents\\Documents\\file\\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\\OECSMS.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\abays\\AppData\\Roaming\\NuGet\\NuGet.Config"
