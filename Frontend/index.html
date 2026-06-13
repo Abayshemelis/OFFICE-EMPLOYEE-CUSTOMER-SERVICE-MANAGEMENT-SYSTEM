@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS - Secure Office Login</title>
+    <link rel="stylesheet" href="shared/style.css">
+    <style>
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+            text-align: center;
+        }
+        .logo-section {
+            margin-bottom: 30px;
+        }
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-color);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 0 20px var(--primary-glow);
+            animation: pulse-glow 3s infinite;
+            margin-bottom: 15px;
+        }
+        .subtitle {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .demo-credentials {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--panel-border);
+            text-align: left;
+            font-size: 13px;
+        }
+        .demo-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .demo-item {
+            cursor: pointer;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+        }
+        .demo-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-color);
+        }
+        .kiosk-btn {
+            margin-top: 15px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="glass-panel login-card">
+            <div class="logo-section">
+                <div class="logo-icon">O</div>
+                <h2>OECSMS</h2>
+                <div class="subtitle p">Office Employee & Customer Management</div>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input class="form-input" type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-input" type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    Sign In
+                </button>
+            </form>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="quickLogin('manager')">Login as Manager (Demo)</button>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 5px;" onclick="quickLogin('assistant')">Login as Assistant (Demo)</button>
+
+            <button class="btn btn-secondary kiosk-btn" onclick="window.location.href='customer/customer-portal.html'">
+                Open Customer Kiosk Portal
+            </button>
+        </div>
+    </div>
+
+    <script src="shared/api.js"></script>
+    <script src="shared/utils.js"></script>
+    <script>
+        // Check if already logged in and redirect
+        const user = API.getCurrentUser();
+        if (user) {
+            redirectUser(user.role);
+        }
+
+        function redirectUser(role) {
+            if (role === 'Manager') {
+                window.location.href = 'manager/manager-dashboard.html';
+            } else if (role === 'Assistant') {
+                window.location.href = 'assistant/assistant-dashboard.html';
+            }
+        }
+
+        // Quick login for demo purposes
+        function quickLogin(role) {
+            const demoCreds = {
+                manager: { username: 'manager', password: 'Manager123!' },
+                assistant: { username: 'assistant', password: 'Assistant123!' }
+            };
+            const creds = demoCreds[role];
+            if (creds) {
+                document.getElementById('username').value = creds.username;
+                document.getElementById('password').value = creds.password;
+                // Trigger form submission
+                document.getElementById('login-form').dispatchEvent(new Event('submit'));
+            }
+        }
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const userVal = document.getElementById('username').value;
+            const passVal = document.getElementById('password').value;
+
+            const res = await API.login(userVal, passVal);
+            if (res.success) {
+                Utils.toast('Welcome, ' + res.data.fullName, 'Login Success', 'success');
+                setTimeout(() => {
+                    redirectUser(res.data.role);
+                }, 800);
+            } else {
+                Utils.toast(res.message, 'Authentication Error', 'danger');
+            }
+        };
+    </script>
+</body>
+</html>

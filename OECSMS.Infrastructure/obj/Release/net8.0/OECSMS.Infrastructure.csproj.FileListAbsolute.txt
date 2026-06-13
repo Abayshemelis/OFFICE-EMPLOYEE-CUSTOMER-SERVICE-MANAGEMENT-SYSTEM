@@ -1,0 +1,17 @@
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.AssemblyInfo.cs
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Infrastructure.deps.json
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Infrastructure.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Infrastructure.pdb
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Application.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Domain.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Domain.pdb
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\bin\Release\net8.0\OECSMS.Application.pdb
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.I.CEBF5585.Up2Date
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\refint\OECSMS.Infrastructure.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\OECSMS.Infrastructure.pdb
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE EMPLOYEE &CUSTOMER SERVICE MANAGEMENT SYSTEM\OECSMS.Infrastructure\obj\Release\net8.0\ref\OECSMS.Infrastructure.dll

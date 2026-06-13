@@ -1,0 +1,115 @@
+.kiosk-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.kiosk-card {
+    padding: 40px;
+    margin-bottom: 25px;
+    border-radius: 24px;
+}
+
+.kiosk-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ticket-number {
+    font-size: 80px;
+    font-weight: 800;
+    color: var(--primary-color);
+    text-align: center;
+    margin: 20px 0;
+    text-shadow: 0 0 30px var(--primary-glow);
+}
+
+.wait-time {
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+/* Star Rating Style */
+.rating-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.star {
+    font-size: 36px;
+    color: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.star.active {
+    color: #fbbf24;
+    text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
+.star:hover {
+    transform: scale(1.25);
+}
+
+/* Quick select buttons for service descriptions */
+.quick-needs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.quick-need-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.quick-need-btn:hover, .quick-need-btn.selected {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.status-pulse {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}

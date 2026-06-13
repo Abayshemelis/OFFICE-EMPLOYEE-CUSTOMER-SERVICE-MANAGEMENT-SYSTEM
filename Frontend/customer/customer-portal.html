@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS - Customer Kiosk Portal</title>
+    <link rel="stylesheet" href="../shared/style.css">
+    <link rel="stylesheet" href="customer.css">
+</head>
+<body>
+    <div class="kiosk-container">
+        
+        <!-- STEP 1: REGISTRATION -->
+        <div id="step-register" class="glass-panel kiosk-card">
+            <h1 class="kiosk-title">Welcome to OECSMS Kiosk</h1>
+            <p style="text-align: center; margin-bottom: 30px;">Please enter your details to receive your service queue ticket.</p>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label" for="cust-name">Full Name</label>
+                    <input class="form-input" type="text" id="cust-name" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="cust-phone">Phone Number (Optional)</label>
+                    <input class="form-input" type="tel" id="cust-phone" placeholder="555-0199">
+                </div>
+                <div class="form-group" style="display:none;">
+                    <!-- Auto assigned assistant for demo -->
+                    <input type="hidden" id="asst-id" value="2">
+                </div>
+                
+                <div class="form-label" style="margin-bottom: 8px;">Select Your Service Need:</div>
+                <div class="quick-needs">
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'Account Support & Setup')">Account Support</div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'Document Review & Signing')">Document Review</div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'Billing & Invoicing Query')">Billing Query</div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'General Advisory Service')">General Inquiry</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cust-desc">Or Describe Your Need</label>
+                    <input class="form-input" type="text" id="cust-desc" placeholder="Describe other issue details...">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                    Register Arrival
+                </button>
+            </form>
+            <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="window.location.href='../index.html'">
+                Back to Staff Login
+            </button>
+        </div>
+
+        <!-- STEP 2: TICKET AND QUEUE TRACKING -->
+        <div id="step-ticket" class="glass-panel kiosk-card" style="display: none;">
+            <h1 class="kiosk-title">Your Service Ticket</h1>
+            <p style="text-align: center;">Please wait at the reception lobby. You will be called shortly.</p>
+            
+            <div class="ticket-number" id="ticket-number">#00</div>
+            
+            <div class="wait-time">
+                Estimated Wait: <span id="est-time" style="color: var(--text-primary); font-weight:600;">0 mins</span>
+            </div>
+
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 40px; font-weight:500;">
+                <span class="status-pulse"></span> Queue Status: <span id="queue-status-text" style="color:#4ade80; margin-left: 5px;">Waiting</span>
+            </div>
+
+            <div style="border-top: 1px solid var(--panel-border); padding-top: 30px;">
+                <h3 style="font-size: 16px; margin-bottom: 10px;">Options:</h3>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn btn-secondary" id="escalate-btn" onclick="openEscalateModal()">
+                        ⚠️ Request Manager Attention
+                    </button>
+                    <button class="btn btn-secondary" onclick="simulateServiceFinish()">
+                        [Demo Mode] Simulate Service Finished
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetKiosk()">
+                        Get New Ticket / Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: SERVICE FEEDBACK -->
+        <div id="step-feedback" class="glass-panel kiosk-card" style="display: none;">
+            <h1 class="kiosk-title">Thank You!</h1>
+            <p style="text-align: center; margin-bottom: 20px;">Your service request is complete. Please rate your experience with us.</p>
+            
+            <div class="rating-group">
+                <span class="star" onclick="setRating(1)">★</span>
+                <span class="star" onclick="setRating(2)">★</span>
+                <span class="star" onclick="setRating(3)">★</span>
+                <span class="star" onclick="setRating(4)">★</span>
+                <span class="star" onclick="setRating(5)">★</span>
+            </div>
+            
+            <form id="feedback-form">
+                <div class="form-group">
+                    <label class="form-label" for="feedback-comments">Optional Comments</label>
+                    <textarea class="form-input" id="feedback-comments" rows="3" placeholder="Tell us how we did..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Submit Feedback
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Contact Manager Modal Overlay -->
+    <div class="modal-overlay" id="escalate-modal">
+        <div class="glass-panel modal-content">
+            <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                <span>⚠️ Contact Manager</span>
+            </h3>
+            <p style="margin-bottom: 20px; font-size: 14px;">Your message will be routed through your serving assistant. Please describe your concern below.</p>
+            
+            <form id="escalate-form">
+                <div class="form-group">
+                    <label class="form-label" for="escalate-msg">Message to Manager</label>
+                    <textarea class="form-input" id="escalate-msg" rows="4" placeholder="Enter message here..." required></textarea>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeEscalateModal()">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/utils.js"></script>
+    <script src="customer.js"></script>
+</body>
+</html>

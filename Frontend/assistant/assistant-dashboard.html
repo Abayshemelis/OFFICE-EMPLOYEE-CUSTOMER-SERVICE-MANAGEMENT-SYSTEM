@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS - Assistant Dashboard</title>
+    <link rel="stylesheet" href="../shared/style.css">
+    <link rel="stylesheet" href="assistant.css">
+</head>
+<body>
+    <div class="dashboard-grid">
+        
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-title">OECSMS Staff</div>
+            <div class="sidebar-nav">
+                <div class="nav-item active" onclick="switchTab('tasks')">📋 Task Board</div>
+                <div class="nav-item" onclick="switchTab('queue')">👥 Customer Queue</div>
+                <div class="nav-item" onclick="switchTab('relay')">✉️ Message Relay <span class="badge bg-danger" id="relay-count" style="display:none; margin-left: auto;">0</span></div>
+                <div class="nav-item" onclick="openChecklistModal(true)">✅ Conduct Checklist</div>
+            </div>
+            <div style="margin-top: auto;">
+                <button class="btn btn-secondary" style="width: 100%;" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 id="welcome-title">Welcome Assistant</h1>
+                    <p>Track your assignments and serve visiting customers.</p>
+                </div>
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <div class="glass-panel" style="padding: 10px 20px; font-weight:600;" id="user-display">Alice Assistant</div>
+                </div>
+            </div>
+
+            <!-- TAB: TASKS -->
+            <div id="tab-tasks" class="tab-pane">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2>Assigned Tasks</h2>
+                    <button class="btn btn-secondary btn-sm" onclick="loadTasks()">🔄 Refresh Tasks</button>
+                </div>
+                <div class="task-board">
+                    <!-- Column Pending -->
+                    <div class="task-column">
+                        <div class="column-header">
+                            <span>Pending</span>
+                            <span class="badge bg-info" id="count-pending">0</span>
+                        </div>
+                        <div id="list-pending"></div>
+                    </div>
+                    <!-- Column InProgress -->
+                    <div class="task-column">
+                        <div class="column-header">
+                            <span>In Progress</span>
+                            <span class="badge bg-primary" id="count-inprogress">0</span>
+                        </div>
+                        <div id="list-inprogress"></div>
+                    </div>
+                    <!-- Column Completed -->
+                    <div class="task-column">
+                        <div class="column-header">
+                            <span>Completed</span>
+                            <span class="badge bg-success" id="count-completed">0</span>
+                        </div>
+                        <div id="list-completed"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: QUEUE -->
+            <div id="tab-queue" class="tab-pane" style="display: none;">
+                <h2>Customer Queue</h2>
+                <p style="margin-bottom: 20px;">Manage customer desk visits and log resolutions.</p>
+
+                <!-- Active Service Panel -->
+                <div class="glass-panel" id="active-service-panel" style="display: none; padding: 25px; margin-bottom: 30px; border-color: rgba(99,102,241,0.4);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                        <div>
+                            <span class="badge bg-primary" style="margin-bottom: 5px;">Currently Serving</span>
+                            <h3 id="current-cust-name" style="font-size: 24px; margin-bottom: 0;">John Doe</h3>
+                            <p style="font-size: 13px;" id="current-cust-desc">Service: Account Setup assistance</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="timer-digits" id="service-timer">00:00</div>
+                            <span style="font-size:12px; color:var(--text-secondary);">Active Session Time</span>
+                        </div>
+                    </div>
+
+                    <form id="service-resolve-form">
+                        <div class="form-group">
+                            <label class="form-label" for="cust-needs-summary">Customer Needs Summary (Active Listening Notes)</label>
+                            <input class="form-input" type="text" id="cust-needs-summary" placeholder="Provide a summary of the customer's detailed needs..." required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="resolution-note">Resolution Note</label>
+                            <textarea class="form-input" id="resolution-note" rows="3" placeholder="Provide details on how the service was resolved or referred..."></textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-primary" onclick="resolveService('Completed')">
+                                Resolve & Complete
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resolveService('Referred')">
+                                Refer to Specialized Dept
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="resolveService('Unresolved')">
+                                Mark Unresolved / Escalate
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="glass-panel" style="padding: 25px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Waiting Lobby</h3>
+                        <button class="btn btn-primary" onclick="callNextCustomer()">Call Next Customer</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;" id="queue-table">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--panel-border); color: var(--text-secondary); font-size:14px;">
+                                    <th style="padding: 12px;">No</th>
+                                    <th style="padding: 12px;">Customer</th>
+                                    <th style="padding: 12px;">Description</th>
+                                    <th style="padding: 12px;">Arrival Time</th>
+                                    <th style="padding: 12px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-list-body">
+                                <tr>
+                                    <td colspan="5" style="padding:20px; text-align:center;" class="p">Lobby is currently empty.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: RELAY INBOX -->
+            <div id="tab-relay" class="tab-pane" style="display: none;">
+                <h2>Customer-Manager Relay Panel</h2>
+                <p style="margin-bottom: 20px;">Moderate escalation requests and relay responses to customers.</p>
+
+                <div class="glass-panel" style="padding: 25px;">
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--panel-border); color: var(--text-secondary); font-size:14px;">
+                                    <th style="padding:12px;">Customer</th>
+                                    <th style="padding:12px;">Message</th>
+                                    <th style="padding:12px;">Manager Reply</th>
+                                    <th style="padding:12px;">Status</th>
+                                    <th style="padding:12px; text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="relay-list-body">
+                                <tr>
+                                    <td colspan="5" style="padding:20px; text-align:center;" class="p">No escalation requests logged.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SHIFT CONDUCT CHECKLIST MODAL -->
+    <div class="modal-overlay" id="checklist-modal">
+        <div class="glass-panel modal-content" style="max-width: 480px;">
+            <h3 style="margin-bottom: 10px; text-align: center;">Shift Commencement Checklist</h3>
+            <p style="text-align: center; margin-bottom: 25px; font-size:14px;">Verify and check the following professional conduct standards before start.</p>
+            
+            <div class="checklist-item" onclick="toggleCheckbox('check-dress')">
+                <input type="checkbox" id="check-dress" class="checklist-box" onclick="event.stopPropagation()">
+                <div style="font-size:14px;">
+                    <strong>Professional Appearance</strong>
+                    <div style="color:var(--text-secondary); font-size:12px;">Dress codes, badge display, clean apparel.</div>
+                </div>
+            </div>
+
+            <div class="checklist-item" onclick="toggleCheckbox('check-greet')">
+                <input type="checkbox" id="check-greet" class="checklist-box" onclick="event.stopPropagation()">
+                <div style="font-size:14px;">
+                    <strong>Greeting Protocol Standard</strong>
+                    <div style="color:var(--text-secondary); font-size:12px;">Stand, smile, and greet client politely by name.</div>
+                </div>
+            </div>
+
+            <div class="checklist-item" onclick="toggleCheckbox('check-listening')">
+                <input type="checkbox" id="check-listening" class="checklist-box" onclick="event.stopPropagation()">
+                <div style="font-size:14px;">
+                    <strong>Active Listening Reinforcement</strong>
+                    <div style="color:var(--text-secondary); font-size:12px;">Note-taking, summarize needs before resolving.</div>
+                </div>
+            </div>
+
+            <div class="checklist-item" onclick="toggleCheckbox('check-privacy')">
+                <input type="checkbox" id="check-privacy" class="checklist-box" onclick="event.stopPropagation()">
+                <div style="font-size:14px;">
+                    <strong>Confidentiality Maintenance</strong>
+                    <div style="color:var(--text-secondary); font-size:12px;">Clear desk data, don't review cases in open sight.</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="start-shift-btn" onclick="submitChecklist()">
+                Acknowledge & Commence Shift
+            </button>
+        </div>
+    </div>
+
+    <!-- Forward to Manager Modal -->
+    <div class="modal-overlay" id="forward-modal">
+        <div class="glass-panel modal-content">
+            <h3>Forward to Manager</h3>
+            <p style="margin-bottom: 15px; font-size:14px;">Add context notes for the manager regarding the customer's request.</p>
+            <form id="forward-form">
+                <input type="hidden" id="forward-contact-id">
+                <div class="form-group">
+                    <label class="form-label" for="asst-forward-note">Assistant context note</label>
+                    <textarea class="form-input" id="asst-forward-note" rows="3" placeholder="Explain the situation briefly..." required></textarea>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeForwardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Forward Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Audit Log Modal -->
+    <div class="modal-overlay" id="audit-modal">
+        <div class="glass-panel modal-content" style="max-width:550px;">
+            <h3>Task Audit History</h3>
+            <div style="max-height: 300px; overflow-y: auto; margin: 20px 0;" id="audit-log-container">
+                <!-- Audit list -->
+            </div>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="closeAuditModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/signalr.js"></script>
+    <script src="assistant.js"></script>
+</body>
+</html>

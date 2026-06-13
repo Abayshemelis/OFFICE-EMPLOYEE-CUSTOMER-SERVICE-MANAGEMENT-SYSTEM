@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS - Manager Dashboard</title>
+    <link rel="stylesheet" href="../shared/style.css">
+    <link rel="stylesheet" href="manager.css">
+</head>
+<body>
+    <div class="dashboard-grid">
+        
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-title">OECSMS Admin</div>
+            <div class="sidebar-nav">
+                <div class="nav-item active" onclick="switchTab('tasks')">📋 Tasks Dashboard</div>
+                <div class="nav-item" onclick="switchTab('assistants')">👥 Assistants Control</div>
+                <div class="nav-item" onclick="switchTab('inbox')">📥 Inbox (Relay) <span class="badge bg-danger" id="inbox-count" style="display:none; margin-left: auto;">0</span></div>
+                <div class="nav-item" onclick="switchTab('reports')">📊 Performance Reports</div>
+                <div class="nav-item" onclick="switchTab('logs')">📝 Customer Service Logs</div>
+            </div>
+            <div style="margin-top: auto;">
+                <button class="btn btn-secondary" style="width: 100%;" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 id="header-title">Manager Dashboard</h1>
+                    <p id="header-subtitle">Supervise office operations and audit employee workflows.</p>
+                </div>
+                <div class="glass-panel" style="padding: 10px 20px; font-weight:600;">System Manager</div>
+            </div>
+
+            <!-- WELCOME CARD -->
+            <div class="glass-panel slideIn" style="padding: 20px; margin-bottom: 25px; border-left: 5px solid var(--primary-color);">
+                <h3 style="margin: 0;">Welcome, Manager!</h3>
+                <p style="margin: 5px 0 0 0; opacity: 0.8;">Use the navigation menu to oversee operations and manage your team efficiently.</p>
+            </div>
+
+            <!-- TAB: TASKS -->
+            <div id="tab-tasks" class="tab-pane">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+                    <h2>Tasks Administration</h2>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-secondary" onclick="loadTasks()">🔄 Refresh</button>
+                        <button class="btn btn-primary" onclick="openCreateTaskModal()">➕ New Task</button>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Task Title</th>
+                                <th>Assigned To</th>
+                                <th>Priority</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-list-body">
+                            <tr>
+                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No tasks registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: ASSISTANTS -->
+            <div id="tab-assistants" class="tab-pane" style="display: none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+                    <h2>Assistants Accounts Control</h2>
+                    <button class="btn btn-primary" onclick="openCreateAssistantModal()">➕ Create Assistant Account</button>
+                </div>
+
+                <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assistant-list-body">
+                            <tr>
+                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No assistants registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: INBOX / RELAY -->
+            <div id="tab-inbox" class="tab-pane" style="display: none;">
+                <h2>Inbox (Escalation Relay Channel)</h2>
+                <p style="margin-bottom: 25px;">Read customer concerns forwarded by assistants and submit official replies.</p>
+
+                <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Assistant Note</th>
+                                <th>Customer Message</th>
+                                <th>Customer Comment</th>
+                                <th>Status</th>
+                                <th>Manager Reply</th>
+                                <th style="text-align:right;">Actions</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="inbox-list-body">
+                            <tr>
+                                <td colspan="7" style="padding:20px; text-align:center;" class="p">No messages in inbox.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: REPORTS -->
+            <div id="tab-reports" class="tab-pane" style="display: none;">
+                <h2>Employee Performance Reports</h2>
+                <p style="margin-bottom: 25px;">Aggregated metrics and ratings audit.</p>
+
+                <div class="metrics-row">
+                    <div class="glass-panel metric-card">
+                        <div class="metric-title">Total Tasks Assigned</div>
+                        <div class="metric-value" id="rep-total-tasks">0</div>
+                    </div>
+                    <div class="glass-panel metric-card" style="border-left: 4px solid var(--success-color);">
+                        <div class="metric-title">Tasks Completed</div>
+                        <div class="metric-value" id="rep-completed-tasks" style="color:var(--success-color);">0</div>
+                    </div>
+                    <div class="glass-panel metric-card" style="border-left: 4px solid var(--danger-color);">
+                        <div class="metric-title">Tasks Overdue</div>
+                        <div class="metric-value" id="rep-overdue-tasks" style="color:var(--danger-color);">0</div>
+                    </div>
+                    <div class="glass-panel metric-card" style="border-left: 4px solid var(--warning-color);">
+                        <div class="metric-title">Average Rating</div>
+                        <div class="metric-value" id="rep-avg-rating" style="color:var(--warning-color);">0.0</div>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="padding: 25px;">
+                    <h3>Assistant Performance Directory</h3>
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Assistant Name</th>
+                                    <th>Active Workload</th>
+                                    <th>Tasks Completed</th>
+                                    <th>Tasks Overdue</th>
+                                    <th>Avg Rating</th>
+                                    <th>Escalations Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-list-body">
+                                <tr>
+                                    <td colspan="6" style="padding:20px; text-align:center;" class="p">No data loaded.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SERVICE LOGS -->
+            <div id="tab-logs" class="tab-pane" style="display: none;">
+                <h2>Customer Service History Logs</h2>
+                <p style="margin-bottom: 25px;">Audit log of all desk transactions and customer satisfaction scores.</p>
+
+                <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Customer</th>
+                                <th>Description</th>
+                                <th>Serving Assistant</th>
+                                <th>Feedback</th>
+                                <th>Rating</th>
+                                <th>Feedback</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-list-body">
+                            <tr>
+                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No logs registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CREATE TASK MODAL -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="glass-panel modal-content">
+            <h3 id="task-modal-title">Create New Task</h3>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label class="form-label" for="task-title">Title</label>
+                    <input class="form-input" type="text" id="task-title" required placeholder="Enter task title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-desc">Description</label>
+                    <input class="form-input" type="text" id="task-desc" placeholder="Task description notes...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-priority">Priority</label>
+                    <select class="form-input" id="task-priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-assignee">Assignee</label>
+                    <select class="form-input" id="task-assignee" required>
+                        <!-- Options loaded dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-deadline">Deadline</label>
+                    <input class="form-input" type="datetime-local" id="task-deadline" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-notes">Manager Notes / Guidelines</label>
+                    <input class="form-input" type="text" id="task-notes" placeholder="Any specific requirements...">
+<div class="glass-panel" style="padding:15px; margin-top:10px; border-left:4px solid var(--primary-color); animation: slideIn 0.6s;">
+  <p style="margin:0; color:var(--text-secondary);">Guideline: Ensure all requirements are clear and concise for the assistant.</p>
+</div>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CREATE ASSISTANT MODAL -->
+    <div class="modal-overlay" id="assistant-modal">
+        <div class="glass-panel modal-content">
+            <h3>Create Assistant Account</h3>
+            <form id="assistant-form">
+                <div class="form-group">
+                    <label class="form-label" for="asst-fullname">Full Name</label>
+                    <input class="form-input" type="text" id="asst-fullname" placeholder="Alice Smith" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="asst-username">Username</label>
+                    <input class="form-input" type="text" id="asst-username" placeholder="alicesmith" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="asst-password">Password</label>
+                    <input class="form-input" type="password" id="asst-password" placeholder="Min 8 characters, 1 digit, 1 upper" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="asst-email">Email</label>
+                    <input class="form-input" type="email" id="asst-email" placeholder="alice@oecsms.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="asst-phone">Phone Number</label>
+                    <input class="form-input" type="tel" id="asst-phone" placeholder="555-0200">
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAssistantModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- REPLY ESCALATION MODAL -->
+    <div class="modal-overlay" id="reply-modal">
+        <div class="glass-panel modal-content">
+            <h3>Post Reply to Customer</h3>
+            <p style="margin-bottom: 15px; font-size:14px;">This response will be relayed to the customer by the serving assistant.</p>
+            <form id="reply-form">
+                <input type="hidden" id="reply-contact-id">
+                <div style="background: rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:10px; padding:15px; margin-bottom:15px;">
+                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:5px;">Customer Message:</div>
+                    <div id="reply-cust-msg" style="font-size:14px; font-style:italic;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="manager-reply-text">Your Reply</label>
+                    <textarea class="form-input" id="manager-reply-text" rows="4" placeholder="Type your reply here..." required></textarea>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeReplyModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post Reply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TASK AUDIT LOGS MODAL -->
+    <div class="modal-overlay" id="audit-modal">
+        <div class="glass-panel modal-content" style="max-width:550px;">
+            <h3>Task Actions History</h3>
+            <div style="max-height: 300px; overflow-y: auto; margin: 20px 0;" id="audit-log-container">
+                <!-- Logs will load -->
+            </div>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="closeAuditModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="../shared/utils.js"></script>
+    <script src="../shared/signalr.js"></script>
+    <script src="manager.js"></script>
+</body>
+</html>
