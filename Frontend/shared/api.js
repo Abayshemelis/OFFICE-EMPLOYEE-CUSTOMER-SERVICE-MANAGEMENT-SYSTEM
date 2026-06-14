@@ -59,12 +59,13 @@ function initializeMockStorage() {
 // Perform simple healthcheck to see if backend is up
 async function checkBackendStatus() {
     try {
-        const response = await fetch(`${BACKEND_URL}/auth/refresh`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        isMockMode = false;
-        console.log("Connected to C# Backend API.");
+        const response = await fetch(`${BACKEND_URL}/health`, { method: 'GET' });
+        if (response.ok) {
+            isMockMode = false;
+            console.log("Connected to C# Backend API.");
+        } else {
+            throw new Error('Health check failed');
+        }
     } catch (e) {
         isMockMode = true;
         initializeMockStorage();

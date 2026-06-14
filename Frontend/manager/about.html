@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS – About</title>
+    <link rel="stylesheet" href="../shared/style.css">
+    <style>
+        .about-wrapper {
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .about-card {
+            max-width: 800px;
+            width: 100%;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+        .about-card h1 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .about-card p {
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .brand-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .contact-list li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-wrapper">
+        <div class="about-card glass-panel">
+            <img src="../image/logo.jpg" alt="OECSMS Logo" class="brand-logo" />
+            <h1>Office Employee Customer Service Management System</h1>
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p>OECSMS is a modern, responsive web application that streamlines office employee and customer service workflows. It provides task management, assistant coordination, inbox handling, performance reports, and full audit logs—all wrapped in a sleek glass‑morphism UI.</p>
+            <p>Our mission is to empower managers with clear visibility, real‑time notifications, and intuitive controls while delivering an attractive user experience.</p>
+            <h3>Contact &amp; Support</h3>
+            <ul class="contact-list">
+                <li>Email: <a href="mailto:amazis1075@gmail.com">amazis1075@gmail.com</a></li>
+                <li>Phone: 0909861075</li>
+                <li>Address: Hawassa sidama ETHIOPIA </li>
+            </ul>
+            <button class="btn btn-primary" style="margin-top:20px;" onclick="window.location.href='manager-dashboard.html'">Back to Dashboard</button>
+        </div>
+    </div>
+</body>
+</html>
