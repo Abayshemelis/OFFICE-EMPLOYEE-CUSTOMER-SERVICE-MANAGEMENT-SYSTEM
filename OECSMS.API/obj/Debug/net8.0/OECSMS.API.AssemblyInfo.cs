@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OECSMS.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a8be2664994df70b92b3e2499ca82393cc150709")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+590bc14936c5627e6459faf49e03f53f5df6c470")]
 [assembly: System.Reflection.AssemblyProductAttribute("OECSMS.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OECSMS.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

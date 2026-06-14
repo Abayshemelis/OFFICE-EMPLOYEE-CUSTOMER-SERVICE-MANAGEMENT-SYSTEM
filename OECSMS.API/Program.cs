@@ -22,7 +22,7 @@ builder.Services.AddControllers();
 // Database Configuration - Use MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString, ServerVersion.Parse("8.0.30-mysql")));
 
 // JWT Authentication Configuration
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SecretKeyForOECSMSSystemAuthentication2026";
@@ -90,7 +90,21 @@ app.UseFileServer(new FileServerOptions
     EnableDefaultFiles = true,
     RequestPath = ""
 });
-app.MapGet("/health", () => Results.Ok(new { status = "OK", message = "✅ OECSMS API is running on port 5000" }));
+app.MapGet("/health", async (AppDbContext db) => {
+    try
+    {
+        var canConnect = await db.Database.CanConnectAsync();
+        if (!canConnect)
+        {
+            return Results.Json(new { status = "Degraded", message = "❌ Database is unreachable" }, statusCode: 503);
+        }
+        return Results.Ok(new { status = "OK", message = "✅ OECSMS API and Database are running" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(new { status = "Error", message = ex.Message }, statusCode: 503);
+    }
+});
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();

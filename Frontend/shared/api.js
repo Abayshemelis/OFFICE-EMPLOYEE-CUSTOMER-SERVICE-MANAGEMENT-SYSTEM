@@ -112,23 +112,21 @@ function getHeaders() {
 // Universal API wrapper
 const API = {
     // Auth endpoints
-    async login(username, password) {
+    async loginWithGoogle(credential) {
         if (isMockMode) {
-            const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
-            const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.passwordHash === password);
-            if (user && user.isActive) {
-                const token = "mock_jwt_token_" + user.userId;
-                localStorage.setItem('oecsms_token', token);
-                localStorage.setItem('oecsms_current_user', JSON.stringify(user));
-                return { success: true, data: { token, username: user.username, fullName: user.fullName, role: user.role, userId: user.userId }, message: 'Success' };
-            }
-            return { success: false, message: 'Invalid credentials or inactive account' };
+            // Mock: treat credential as email and map to demo users
+            const email = credential; // In mock, just use credential string
+            // Simple mock mapping: manager@example.com -> manager, assistant@example.com -> assistant
+            const mockUser = email.includes('manager') ? { role: 'Manager', username: 'manager', fullName: 'System Manager', token: 'mock_jwt_token_1' } : { role: 'Assistant', username: 'assistant', fullName: 'Alice Assistant', token: 'mock_jwt_token_2' };
+            localStorage.setItem('oecsms_token', mockUser.token);
+            localStorage.setItem('oecsms_current_user', JSON.stringify(mockUser));
+            return { success: true, data: mockUser };
         } else {
             try {
-                const res = await fetch(`${BACKEND_URL}/auth/login`, {
+                const res = await fetch(`${BACKEND_URL}/auth/google`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ credential })
                 });
                 const data = await res.json();
                 if (data.success && data.data) {
@@ -137,10 +135,55 @@ const API = {
                 }
                 return data;
             } catch (e) {
-                return { success: false, message: e.message };
+                console.error('Google login failed', e);
+                return { success: false, message: 'Google login error' };
             }
         }
     },
+        async login(username, password) {
+            if (isMockMode) {
+                const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
+                const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.passwordHash === password);
+                if (user && user.isActive) {
+                    const token = "mock_jwt_token_" + user.userId;
+                    localStorage.setItem('oecsms_token', token);
+                    localStorage.setItem('oecsms_current_user', JSON.stringify(user));
+                    return { success: true, data: { token, username: user.username, fullName: user.fullName, role: user.role, userId: user.userId }, message: 'Success' };
+                }
+                return { success: false, message: 'Invalid credentials or inactive account' };
+            } else {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    if (!res.ok && res.status >= 500) {
+                        throw new Error('Database or Server Error');
+                    }
+
+                    const data = await res.json();
+
+                    if (data && !data.success && data.message && (data.message.toLowerCase().includes('mysql') || data.message.toLowerCase().includes('connect') || data.message.toLowerCase().includes('database'))) {
+                        throw new Error(data.message);
+                    }
+
+                    if (data.success && data.data) {
+                        localStorage.setItem('oecsms_token', data.data.token);
+                        localStorage.setItem('oecsms_current_user', JSON.stringify(data.data));
+                    }
+                    return data;
+                } catch (e) {
+                    console.warn("Backend login failed due to database or connection error. Falling back to Mock Mode.", e);
+                    isMockMode = true;
+                    initializeMockStorage();
+                    showModeIndicator();
+                    return await this.login(username, password);
+                }
+            }
+        },
+
 
     getCurrentUser() {
         if (isMockMode) {
@@ -180,12 +223,23 @@ const API = {
             localStorage.setItem('oecsms_users', JSON.stringify(users));
             return { success: true, message: 'Assistant created' };
         } else {
-            const res = await fetch(`${BACKEND_URL}/users`, {
-                method: 'POST',
-                headers: getHeaders(),
-                body: JSON.stringify({ fullName, username, password, email, phone })
-            });
-            return await res.json();
+            try {
+                const res = await fetch(`${BACKEND_URL}/users`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ FullName: fullName, Username: username, Password: password, Email: email, Phone: phone })
+                });
+                if (!res.ok && res.status >= 500) throw new Error('Server Error');
+                const data = await res.json();
+                if (data && !data.success && data.message && (data.message.toLowerCase().includes('mysql') || data.message.toLowerCase().includes('database'))) throw new Error(data.message);
+                return data;
+            } catch (e) {
+                console.warn("Backend unavailable. Creating assistant in mock mode.", e);
+                isMockMode = true;
+                initializeMockStorage();
+                showModeIndicator();
+                return await this.createAssistant(fullName, username, password, email, phone);
+            }
         }
     },
 

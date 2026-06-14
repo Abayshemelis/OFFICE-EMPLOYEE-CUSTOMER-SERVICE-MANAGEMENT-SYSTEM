@@ -1,7 +1,7 @@
 .dashboard-grid {
     display: grid;
     grid-template-columns: 240px 1fr;
-    min-height: 100vh;
+    flex: 1;
 }
 
 body {
@@ -160,63 +160,3 @@ tr:hover td {
     }
 }
 
-/* Footer Styles - Attractive Glassmorphism */
-.footer {
-    position: relative;
-    padding: 40px 20px;
-    text-align: center;
-    background: rgba(255,255,255,0.08);
-    border-top: 1px solid var(--panel-border);
-    margin-top: 60px;
-    color: var(--text-secondary);
-    overflow: hidden;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
-.footer-bg {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.3));
-    opacity: 0.7;
-    z-index: -1;
-}
-.footer-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    z-index: 1;
-}
-.footer-brand .brand-name {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin: 0;
-}
-.footer-brand .brand-tagline {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin: 5px 0 0;
-}
-.footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
-.footer-links .footer-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-.footer-links .footer-link:hover {
-    color: var(--primary-color);
-    text-decoration: underline;
-}
-.footer-copy {
-    font-size: 12px;
-    opacity: 0.8;
-}

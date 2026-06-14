@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,21 @@
     <link rel="stylesheet" href="../shared/style.css">
     <link rel="stylesheet" href="manager.css">
 </head>
+
 <body>
     <div class="dashboard-grid">
-        
+
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-title">OECSMS Admin</div>
             <div class="sidebar-nav">
                 <div class="nav-item active" onclick="switchTab('tasks')">📋 Tasks Dashboard</div>
                 <div class="nav-item" onclick="switchTab('assistants')">👥 Assistants Control</div>
-                <div class="nav-item" onclick="switchTab('inbox')">📥 Inbox (Relay) <span class="badge bg-danger" id="inbox-count" style="display:none; margin-left: auto;">0</span></div>
+                <div class="nav-item" onclick="switchTab('inbox')">📥 Inbox (Relay) <span class="badge bg-danger"
+                        id="inbox-count" style="display:none; margin-left: auto;">0</span></div>
                 <div class="nav-item" onclick="switchTab('reports')">📊 Performance Reports</div>
-<div class="nav-item" onclick="switchTab('logs')">📝 Customer Service Logs</div>
-<div class="nav-item" onclick="window.location.href='about.html'">ℹ️ About</div>
+                <div class="nav-item" onclick="switchTab('logs')">📝 Customer Service Logs</div>
+                <div class="nav-item" onclick="window.location.href='about.html'">ℹ️ About</div>
             </div>
             <div style="margin-top: auto;">
                 <button class="btn btn-secondary" style="width: 100%;" onclick="logout()">Logout</button>
@@ -37,9 +40,11 @@
             </div>
 
             <!-- WELCOME CARD -->
-            <div class="glass-panel slideIn" style="padding: 20px; margin-bottom: 25px; border-left: 5px solid var(--primary-color);">
+            <div class="glass-panel slideIn"
+                style="padding: 20px; margin-bottom: 25px; border-left: 5px solid var(--primary-color);">
                 <h3 style="margin: 0;">Welcome, Manager!</h3>
-                <p style="margin: 5px 0 0 0; opacity: 0.8;">Use the navigation menu to oversee operations and manage your team efficiently.</p>
+                <p style="margin: 5px 0 0 0; opacity: 0.8;">Use the navigation menu to oversee operations and manage
+                    your team efficiently.</p>
             </div>
 
             <!-- TAB: TASKS -->
@@ -54,7 +59,8 @@
 
                 <div class="glass-panel task-card-container">
                     <!-- Task cards will be injected here -->
-                    <div id="tasks-placeholder" class="p" style="padding:20px; text-align:center;">No tasks registered.</div>
+                    <div id="tasks-placeholder" class="p" style="padding:20px; text-align:center;">No tasks registered.
+                    </div>
                 </div>
             </div>
 
@@ -62,7 +68,8 @@
             <div id="tab-assistants" class="tab-pane" style="display: none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
                     <h2>Assistants Accounts Control</h2>
-                    <button class="btn btn-primary" onclick="openCreateAssistantModal()">➕ Create Assistant Account</button>
+                    <button class="btn btn-primary" onclick="openCreateAssistantModal()">➕ Create Assistant
+                        Account</button>
                 </div>
 
                 <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
@@ -79,7 +86,8 @@
                         </thead>
                         <tbody id="assistant-list-body">
                             <tr>
-                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No assistants registered.</td>
+                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No assistants
+                                    registered.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -89,7 +97,8 @@
             <!-- TAB: INBOX / RELAY -->
             <div id="tab-inbox" class="tab-pane" style="display: none;">
                 <h2>Inbox (Escalation Relay Channel)</h2>
-                <p style="margin-bottom: 25px;">Read customer concerns forwarded by assistants and submit official replies.</p>
+                <p style="margin-bottom: 25px;">Read customer concerns forwarded by assistants and submit official
+                    replies.</p>
 
                 <div class="glass-panel" style="padding: 25px; overflow-x: auto;">
                     <table>
@@ -107,7 +116,8 @@
                         </thead>
                         <tbody id="inbox-list-body">
                             <tr>
-                                <td colspan="7" style="padding:20px; text-align:center;" class="p">No messages in inbox.</td>
+                                <td colspan="7" style="padding:20px; text-align:center;" class="p">No messages in inbox.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -154,7 +164,8 @@
                             </thead>
                             <tbody id="reports-list-body">
                                 <tr>
-                                    <td colspan="6" style="padding:20px; text-align:center;" class="p">No data loaded.</td>
+                                    <td colspan="6" style="padding:20px; text-align:center;" class="p">No data loaded.
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -183,7 +194,8 @@
                         </thead>
                         <tbody id="logs-list-body">
                             <tr>
-                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No logs registered.</td>
+                                <td colspan="6" style="padding:20px; text-align:center;" class="p">No logs registered.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -193,53 +205,57 @@
         </div>
     </div>
 
-<!-- CREATE TASK MODAL -->
-<div class="modal-overlay" id="task-modal">
-    <div class="glass-panel modal-content" style="max-width:600px; padding:20px;">
-        <h2 id="task-modal-title" style="margin-top:0;">Create New Task</h2>
-        <form id="task-form" style="display:flex; flex-direction:column; gap:12px;">
-            <input type="hidden" id="task-id" />
-            <div class="form-group">
-                <label class="form-label" for="task-title">Title</label>
-                <input class="form-input" type="text" id="task-title" required placeholder="Enter task title" />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="task-desc">Description</label>
-                <textarea class="form-input" id="task-desc" placeholder="Task description notes..." rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="task-priority">Priority</label>
-                <select class="form-input" id="task-priority">
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                    <option value="Critical">Critical</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="task-assignee">Assignee</label>
-                <select class="form-input" id="task-assignee" required>
-                    <!-- Options loaded dynamically -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="task-deadline">Deadline</label>
-                <input class="form-input" type="datetime-local" id="task-deadline" required />
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="task-notes">Manager Notes / Guidelines</label>
-                <textarea class="form-input" id="task-notes" placeholder="Any specific requirements..." rows="2"></textarea>
-                <div class="glass-panel" style="padding:12px;margin-top:8px;border-left:4px solid var(--primary-color);">
-                    <p style="margin:0;color:var(--text-secondary);">Guideline: Ensure all requirements are clear and concise for the assistant.</p>
+    <!-- CREATE TASK MODAL -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="glass-panel modal-content" style="max-width:600px; padding:20px;">
+            <h2 id="task-modal-title" style="margin-top:0;">Create New Task</h2>
+            <form id="task-form" style="display:flex; flex-direction:column; gap:12px;">
+                <input type="hidden" id="task-id" />
+                <div class="form-group">
+                    <label class="form-label" for="task-title">Title</label>
+                    <input class="form-input" type="text" id="task-title" required placeholder="Enter task title" />
                 </div>
-            </div>
-            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Task</button>
-            </div>
-        </form>
+                <div class="form-group">
+                    <label class="form-label" for="task-desc">Description</label>
+                    <textarea class="form-input" id="task-desc" placeholder="Task description notes..."
+                        rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-priority">Priority</label>
+                    <select class="form-input" id="task-priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-assignee">Assignee</label>
+                    <select class="form-input" id="task-assignee" required>
+                        <!-- Options loaded dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-deadline">Deadline</label>
+                    <input class="form-input" type="datetime-local" id="task-deadline" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="task-notes">Manager Notes / Guidelines</label>
+                    <textarea class="form-input" id="task-notes" placeholder="Any specific requirements..."
+                        rows="2"></textarea>
+                    <div class="glass-panel"
+                        style="padding:12px;margin-top:8px;border-left:4px solid var(--primary-color);">
+                        <p style="margin:0;color:var(--text-secondary);">Guideline: Ensure all requirements are clear
+                            and concise for the assistant.</p>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
     <!-- CREATE ASSISTANT MODAL -->
     <div class="modal-overlay" id="assistant-modal">
@@ -252,11 +268,13 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="asst-username">Username</label>
-                    <input class="form-input" type="text" id="asst-username" placeholder="alicesmith" required autocomplete="username">
+                    <input class="form-input" type="text" id="asst-username" placeholder="alicesmith" required
+                        autocomplete="username">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="asst-password">Password</label>
-                    <input class="form-input" type="password" id="asst-password" placeholder="Min 8 characters, 1 digit, 1 upper" required autocomplete="new-password">
+                    <input class="form-input" type="password" id="asst-password"
+                        placeholder="Min 8 characters, 1 digit, 1 upper" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="asst-email">Email</label>
@@ -278,16 +296,19 @@
     <div class="modal-overlay" id="reply-modal">
         <div class="glass-panel modal-content">
             <h3>Post Reply to Customer</h3>
-            <p style="margin-bottom: 15px; font-size:14px;">This response will be relayed to the customer by the serving assistant.</p>
+            <p style="margin-bottom: 15px; font-size:14px;">This response will be relayed to the customer by the serving
+                assistant.</p>
             <form id="reply-form">
                 <input type="hidden" id="reply-contact-id">
-                <div style="background: rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:10px; padding:15px; margin-bottom:15px;">
+                <div
+                    style="background: rgba(255,255,255,0.03); border:1px solid var(--panel-border); border-radius:10px; padding:15px; margin-bottom:15px;">
                     <div style="font-size:12px; color:var(--text-secondary); margin-bottom:5px;">Customer Message:</div>
                     <div id="reply-cust-msg" style="font-size:14px; font-style:italic;"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="manager-reply-text">Your Reply</label>
-                    <textarea class="form-input" id="manager-reply-text" rows="4" placeholder="Type your reply here..." required></textarea>
+                    <textarea class="form-input" id="manager-reply-text" rows="4" placeholder="Type your reply here..."
+                        required></textarea>
                 </div>
                 <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
                     <button type="button" class="btn btn-secondary" onclick="closeReplyModal()">Cancel</button>
@@ -308,9 +329,29 @@
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="footer-bg"></div>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="brand-name">Office Employee Customer Service Management System</h2>
+                <p class="brand-tagline">Empowering your workforce, simplifying service.</p>
+            </div>
+            <div class="footer-links">
+                <a href="../manager/about.html" class="footer-link">About</a>
+                <a href="../manager/contact.html" class="footer-link">Contact Us</a>
+                <a href="abayshemelisshefraw@gmail.com" class="footer-link">abayshemelisshefraw@gmail.com</a>
+                <a href="tel:0995502317" class="footer-link">0995502317</a>
+            </div>
+            <div class="footer-copy">
+                <span>© 2026 OECSMS. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
     <script src="../shared/api.js"></script>
     <script src="../shared/utils.js"></script>
     <script src="../shared/signalr.js"></script>
     <script src="manager.js"></script>
 </body>
+
 </html>

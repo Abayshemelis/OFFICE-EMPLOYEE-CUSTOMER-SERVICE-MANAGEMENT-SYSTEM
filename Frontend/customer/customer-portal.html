@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,16 @@
     <link rel="stylesheet" href="../shared/style.css">
     <link rel="stylesheet" href="customer.css">
 </head>
+
 <body>
     <div class="kiosk-container">
-        
+
         <!-- STEP 1: REGISTRATION -->
         <div id="step-register" class="glass-panel kiosk-card">
             <h1 class="kiosk-title">Welcome to OECSMS Kiosk</h1>
-            <p style="text-align: center; margin-bottom: 30px;">Please enter your details to receive your service queue ticket.</p>
-            
+            <p style="text-align: center; margin-bottom: 30px;">Please enter your details to receive your service queue
+                ticket.</p>
+
             <form id="register-form">
                 <div class="form-group">
                     <label class="form-label" for="cust-name">Full Name</label>
@@ -28,13 +31,17 @@
                     <!-- Auto assigned assistant for demo -->
                     <input type="hidden" id="asst-id" value="2">
                 </div>
-                
+
                 <div class="form-label" style="margin-bottom: 8px;">Select Your Service Need:</div>
                 <div class="quick-needs">
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'Account Support & Setup')">Account Support</div>
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'Document Review & Signing')">Document Review</div>
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'Billing & Invoicing Query')">Billing Query</div>
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'General Advisory Service')">General Inquiry</div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'Account Support & Setup')">Account Support
+                    </div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'Document Review & Signing')">Document Review
+                    </div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'Billing & Invoicing Query')">Billing Query
+                    </div>
+                    <div class="quick-need-btn" onclick="selectNeed(this, 'General Advisory Service')">General Inquiry
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -46,7 +53,8 @@
                     Register Arrival
                 </button>
             </form>
-            <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="window.location.href='../index.html'">
+            <button class="btn btn-secondary" style="width:100%; margin-top:10px;"
+                onclick="window.location.href='../index.html'">
                 Back to Staff Login
             </button>
         </div>
@@ -55,15 +63,17 @@
         <div id="step-ticket" class="glass-panel kiosk-card" style="display: none;">
             <h1 class="kiosk-title">Your Service Ticket</h1>
             <p style="text-align: center;">Please wait at the reception lobby. You will be called shortly.</p>
-            
+
             <div class="ticket-number" id="ticket-number">#00</div>
-            
+
             <div class="wait-time">
                 Estimated Wait: <span id="est-time" style="color: var(--text-primary); font-weight:600;">0 mins</span>
             </div>
 
-            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 40px; font-weight:500;">
-                <span class="status-pulse"></span> Queue Status: <span id="queue-status-text" style="color:#4ade80; margin-left: 5px;">Waiting</span>
+            <div
+                style="display: flex; justify-content: center; align-items: center; margin-bottom: 40px; font-weight:500;">
+                <span class="status-pulse"></span> Queue Status: <span id="queue-status-text"
+                    style="color:#4ade80; margin-left: 5px;">Waiting</span>
             </div>
 
             <div style="border-top: 1px solid var(--panel-border); padding-top: 30px;">
@@ -85,8 +95,9 @@
         <!-- STEP 3: SERVICE FEEDBACK -->
         <div id="step-feedback" class="glass-panel kiosk-card" style="display: none;">
             <h1 class="kiosk-title">Thank You!</h1>
-            <p style="text-align: center; margin-bottom: 20px;">Your service request is complete. Please rate your experience with us.</p>
-            
+            <p style="text-align: center; margin-bottom: 20px;">Your service request is complete. Please rate your
+                experience with us.</p>
+
             <div class="rating-group">
                 <span class="star" onclick="setRating(1)">★</span>
                 <span class="star" onclick="setRating(2)">★</span>
@@ -94,11 +105,12 @@
                 <span class="star" onclick="setRating(4)">★</span>
                 <span class="star" onclick="setRating(5)">★</span>
             </div>
-            
+
             <form id="feedback-form">
                 <div class="form-group">
                     <label class="form-label" for="feedback-comments">Optional Comments</label>
-                    <textarea class="form-input" id="feedback-comments" rows="3" placeholder="Tell us how we did..."></textarea>
+                    <textarea class="form-input" id="feedback-comments" rows="3"
+                        placeholder="Tell us how we did..."></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                     Submit Feedback
@@ -114,12 +126,14 @@
             <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
                 <span>⚠️ Contact Manager</span>
             </h3>
-            <p style="margin-bottom: 20px; font-size: 14px;">Your message will be routed through your serving assistant. Please describe your concern below.</p>
-            
+            <p style="margin-bottom: 20px; font-size: 14px;">Your message will be routed through your serving assistant.
+                Please describe your concern below.</p>
+
             <form id="escalate-form">
                 <div class="form-group">
                     <label class="form-label" for="escalate-msg">Message to Manager</label>
-                    <textarea class="form-input" id="escalate-msg" rows="4" placeholder="Enter message here..." required></textarea>
+                    <textarea class="form-input" id="escalate-msg" rows="4" placeholder="Enter message here..."
+                        required></textarea>
                 </div>
                 <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
                     <button type="button" class="btn btn-secondary" onclick="closeEscalateModal()">Cancel</button>
@@ -129,8 +143,28 @@
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="footer-bg"></div>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="brand-name">Office Employee Customer Service Management System</h2>
+                <p class="brand-tagline">Empowering your workforce, simplifying service.</p>
+            </div>
+            <div class="footer-links">
+                <a href="../manager/about.html" class="footer-link">About</a>
+                <a href="../manager/contact.html" class="footer-link">Contact Us</a>
+                <a href="mailto:amazis1075@gmail.com" class="footer-link">amazis1075@gmail.com</a>
+                <a href="tel:0909861075" class="footer-link">0909861075</a>
+            </div>
+            <div class="footer-copy">
+                <span>© 2026 OECSMS. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
     <script src="../shared/api.js"></script>
     <script src="../shared/utils.js"></script>
     <script src="customer.js"></script>
 </body>
+
 </html>

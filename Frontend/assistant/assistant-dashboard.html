@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,18 @@
     <link rel="stylesheet" href="../shared/style.css">
     <link rel="stylesheet" href="assistant.css">
 </head>
+
 <body>
     <div class="dashboard-grid">
-        
+
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-title">OECSMS Staff</div>
             <div class="sidebar-nav">
                 <div class="nav-item active" onclick="switchTab('tasks')">📋 Task Board</div>
                 <div class="nav-item" onclick="switchTab('queue')">👥 Customer Queue</div>
-                <div class="nav-item" onclick="switchTab('relay')">✉️ Message Relay <span class="badge bg-danger" id="relay-count" style="display:none; margin-left: auto;">0</span></div>
+                <div class="nav-item" onclick="switchTab('relay')">✉️ Message Relay <span class="badge bg-danger"
+                        id="relay-count" style="display:none; margin-left: auto;">0</span></div>
                 <div class="nav-item" onclick="openChecklistModal(true)">✅ Conduct Checklist</div>
             </div>
             <div style="margin-top: auto;">
@@ -32,7 +35,8 @@
                     <p>Track your assignments and serve visiting customers.</p>
                 </div>
                 <div style="display:flex; gap:15px; align-items:center;">
-                    <div class="glass-panel" style="padding: 10px 20px; font-weight:600;" id="user-display">Alice Assistant</div>
+                    <div class="glass-panel" style="padding: 10px 20px; font-weight:600;" id="user-display">Alice
+                        Assistant</div>
                 </div>
             </div>
 
@@ -76,7 +80,8 @@
                 <p style="margin-bottom: 20px;">Manage customer desk visits and log resolutions.</p>
 
                 <!-- Active Service Panel -->
-                <div class="glass-panel" id="active-service-panel" style="display: none; padding: 25px; margin-bottom: 30px; border-color: rgba(99,102,241,0.4);">
+                <div class="glass-panel" id="active-service-panel"
+                    style="display: none; padding: 25px; margin-bottom: 30px; border-color: rgba(99,102,241,0.4);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
                         <div>
                             <span class="badge bg-primary" style="margin-bottom: 5px;">Currently Serving</span>
@@ -91,12 +96,15 @@
 
                     <form id="service-resolve-form">
                         <div class="form-group">
-                            <label class="form-label" for="cust-needs-summary">Customer Needs Summary (Active Listening Notes)</label>
-                            <input class="form-input" type="text" id="cust-needs-summary" placeholder="Provide a summary of the customer's detailed needs..." required>
+                            <label class="form-label" for="cust-needs-summary">Customer Needs Summary (Active Listening
+                                Notes)</label>
+                            <input class="form-input" type="text" id="cust-needs-summary"
+                                placeholder="Provide a summary of the customer's detailed needs..." required>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="resolution-note">Resolution Note</label>
-                            <textarea class="form-input" id="resolution-note" rows="3" placeholder="Provide details on how the service was resolved or referred..."></textarea>
+                            <textarea class="form-input" id="resolution-note" rows="3"
+                                placeholder="Provide details on how the service was resolved or referred..."></textarea>
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <button type="button" class="btn btn-primary" onclick="resolveService('Completed')">
@@ -113,14 +121,16 @@
                 </div>
 
                 <div class="glass-panel" style="padding: 25px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3>Waiting Lobby</h3>
                         <button class="btn btn-primary" onclick="callNextCustomer()">Call Next Customer</button>
                     </div>
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse; text-align: left;" id="queue-table">
                             <thead>
-                                <tr style="border-bottom: 1px solid var(--panel-border); color: var(--text-secondary); font-size:14px;">
+                                <tr
+                                    style="border-bottom: 1px solid var(--panel-border); color: var(--text-secondary); font-size:14px;">
                                     <th style="padding: 12px;">No</th>
                                     <th style="padding: 12px;">Customer</th>
                                     <th style="padding: 12px;">Description</th>
@@ -130,7 +140,8 @@
                             </thead>
                             <tbody id="queue-list-body">
                                 <tr>
-                                    <td colspan="5" style="padding:20px; text-align:center;" class="p">Lobby is currently empty.</td>
+                                    <td colspan="5" style="padding:20px; text-align:center;" class="p">Lobby is
+                                        currently empty.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -147,7 +158,8 @@
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse; text-align: left;">
                             <thead>
-                                <tr style="border-bottom: 1px solid var(--panel-border); color: var(--text-secondary); font-size:14px;">
+                                <tr
+                                    style="border-bottom: 1px solid var(--panel-border); color: var(--text-secondary); font-size:14px;">
                                     <th style="padding:12px;">Customer</th>
                                     <th style="padding:12px;">Message</th>
                                     <th style="padding:12px;">Manager Reply</th>
@@ -157,7 +169,8 @@
                             </thead>
                             <tbody id="relay-list-body">
                                 <tr>
-                                    <td colspan="5" style="padding:20px; text-align:center;" class="p">No escalation requests logged.</td>
+                                    <td colspan="5" style="padding:20px; text-align:center;" class="p">No escalation
+                                        requests logged.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -172,13 +185,15 @@
     <div class="modal-overlay" id="checklist-modal">
         <div class="glass-panel modal-content" style="max-width: 480px;">
             <h3 style="margin-bottom: 10px; text-align: center;">Shift Commencement Checklist</h3>
-            <p style="text-align: center; margin-bottom: 25px; font-size:14px;">Verify and check the following professional conduct standards before start.</p>
-            
+            <p style="text-align: center; margin-bottom: 25px; font-size:14px;">Verify and check the following
+                professional conduct standards before start.</p>
+
             <div class="checklist-item" onclick="toggleCheckbox('check-dress')">
                 <input type="checkbox" id="check-dress" class="checklist-box" onclick="event.stopPropagation()">
                 <div style="font-size:14px;">
                     <strong>Professional Appearance</strong>
-                    <div style="color:var(--text-secondary); font-size:12px;">Dress codes, badge display, clean apparel.</div>
+                    <div style="color:var(--text-secondary); font-size:12px;">Dress codes, badge display, clean apparel.
+                    </div>
                 </div>
             </div>
 
@@ -186,7 +201,8 @@
                 <input type="checkbox" id="check-greet" class="checklist-box" onclick="event.stopPropagation()">
                 <div style="font-size:14px;">
                     <strong>Greeting Protocol Standard</strong>
-                    <div style="color:var(--text-secondary); font-size:12px;">Stand, smile, and greet client politely by name.</div>
+                    <div style="color:var(--text-secondary); font-size:12px;">Stand, smile, and greet client politely by
+                        name.</div>
                 </div>
             </div>
 
@@ -194,7 +210,8 @@
                 <input type="checkbox" id="check-listening" class="checklist-box" onclick="event.stopPropagation()">
                 <div style="font-size:14px;">
                     <strong>Active Listening Reinforcement</strong>
-                    <div style="color:var(--text-secondary); font-size:12px;">Note-taking, summarize needs before resolving.</div>
+                    <div style="color:var(--text-secondary); font-size:12px;">Note-taking, summarize needs before
+                        resolving.</div>
                 </div>
             </div>
 
@@ -202,11 +219,13 @@
                 <input type="checkbox" id="check-privacy" class="checklist-box" onclick="event.stopPropagation()">
                 <div style="font-size:14px;">
                     <strong>Confidentiality Maintenance</strong>
-                    <div style="color:var(--text-secondary); font-size:12px;">Clear desk data, don't review cases in open sight.</div>
+                    <div style="color:var(--text-secondary); font-size:12px;">Clear desk data, don't review cases in
+                        open sight.</div>
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="start-shift-btn" onclick="submitChecklist()">
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="start-shift-btn"
+                onclick="submitChecklist()">
                 Acknowledge & Commence Shift
             </button>
         </div>
@@ -216,12 +235,14 @@
     <div class="modal-overlay" id="forward-modal">
         <div class="glass-panel modal-content">
             <h3>Forward to Manager</h3>
-            <p style="margin-bottom: 15px; font-size:14px;">Add context notes for the manager regarding the customer's request.</p>
+            <p style="margin-bottom: 15px; font-size:14px;">Add context notes for the manager regarding the customer's
+                request.</p>
             <form id="forward-form">
                 <input type="hidden" id="forward-contact-id">
                 <div class="form-group">
                     <label class="form-label" for="asst-forward-note">Assistant context note</label>
-                    <textarea class="form-input" id="asst-forward-note" rows="3" placeholder="Explain the situation briefly..." required></textarea>
+                    <textarea class="form-input" id="asst-forward-note" rows="3"
+                        placeholder="Explain the situation briefly..." required></textarea>
                 </div>
                 <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
                     <button type="button" class="btn btn-secondary" onclick="closeForwardModal()">Cancel</button>
@@ -242,9 +263,29 @@
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="footer-bg"></div>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="brand-name">Office Employee Customer Service Management System</h2>
+                <p class="brand-tagline">Empowering your workforce, simplifying service.</p>
+            </div>
+            <div class="footer-links">
+                <a href="../manager/about.html" class="footer-link">About</a>
+                <a href="../manager/contact.html" class="footer-link">Contact Us</a>
+                <a href="mailto:amazis1075@gmail.com" class="footer-link">amazis1075@gmail.com</a>
+                <a href="tel:+251909861075" class="footer-link">+251909861075</a>
+            </div>
+            <div class="footer-copy">
+                <span>© 2026 OECSMS. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
     <script src="../shared/api.js"></script>
     <script src="../shared/utils.js"></script>
     <script src="../shared/signalr.js"></script>
     <script src="assistant.js"></script>
 </body>
+
 </html>
