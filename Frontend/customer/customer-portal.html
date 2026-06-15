@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OECSMS - Customer Kiosk Portal</title>
+    <title>OECSMS - Customer Service Portal</title>
     <link rel="stylesheet" href="../shared/style.css">
     <link rel="stylesheet" href="customer.css">
 </head>
@@ -14,7 +14,7 @@
 
         <!-- STEP 1: REGISTRATION -->
         <div id="step-register" class="glass-panel kiosk-card">
-            <h1 class="kiosk-title">Welcome to OECSMS Kiosk</h1>
+            <h1 class="kiosk-title">Welcome to OECSMS Customer service page</h1>
             <p style="text-align: center; margin-bottom: 30px;">Please enter your details to receive your service queue
                 ticket.</p>
 
@@ -33,16 +33,18 @@
                 </div>
 
                 <div class="form-label" style="margin-bottom: 8px;">Select Your Service Need:</div>
-                <div class="quick-needs">
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'Account Support & Setup')">Account Support
+                    <div class="quick-needs">
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Account Support & Setup')">Account Support</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Document Review & Signing')">Document Review</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Billing & Invoicing Query')">Billing Query</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'General Advisory Service')">General Inquiry</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Technical Support')">Technical Support</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'IT Helpdesk')">IT Helpdesk</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'HR Services')">HR Services</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Legal Consultation')">Legal Consultation</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Facilities Maintenance')">Facilities Maintenance</div>
+                        <div class="quick-need-btn" onclick="selectNeed(this, 'Feedback & Suggestions')">Feedback & Suggestions</div>
                     </div>
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'Document Review & Signing')">Document Review
-                    </div>
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'Billing & Invoicing Query')">Billing Query
-                    </div>
-                    <div class="quick-need-btn" onclick="selectNeed(this, 'General Advisory Service')">General Inquiry
-                    </div>
-                </div>
 
                 <div class="form-group">
                     <label class="form-label" for="cust-desc">Or Describe Your Need</label>
