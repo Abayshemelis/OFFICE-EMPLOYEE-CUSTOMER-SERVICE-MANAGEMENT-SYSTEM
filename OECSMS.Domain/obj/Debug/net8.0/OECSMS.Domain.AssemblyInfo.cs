@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OECSMS.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ee21831170c09b66dd44404249e2c919c99bf7c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+714490243d562b2df4c80e5d6a987c2f0e055c9d")]
 [assembly: System.Reflection.AssemblyProductAttribute("OECSMS.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OECSMS.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

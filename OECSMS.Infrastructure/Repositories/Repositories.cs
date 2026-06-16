@@ -10,6 +10,7 @@ using DomainTaskStatus = OECSMS.Domain.Enums.TaskStatus;
 using OECSMS.Infrastructure.Data;
 using Task = System.Threading.Tasks.Task;
 using DomTask = OECSMS.Domain.Entities.Task;
+using DomainContactManagerRequest = OECSMS.Domain.Entities.ContactManagerRequest;
 
 namespace OECSMS.Infrastructure.Repositories
 {
@@ -260,7 +261,7 @@ namespace OECSMS.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<ContactManagerRequest?> GetByIdAsync(int id)
+        public async Task<DomainContactManagerRequest?> GetByIdAsync(int id)
         {
             return await _context.ContactManagerRequests
                 .Include(c => c.ServiceRequest)
@@ -270,11 +271,11 @@ namespace OECSMS.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.ContactRequestId == id);
         }
 
-        public async Task<IEnumerable<ContactManagerRequest>> GetAllAsync(
+        public async Task<IEnumerable<DomainContactManagerRequest>> GetAllAsync(
             ContactRequestStatus? status = null,
             int? assistantId = null)
         {
-            IQueryable<ContactManagerRequest> query = _context.ContactManagerRequests
+            IQueryable<DomainContactManagerRequest> query = _context.ContactManagerRequests
                 .Include(c => c.ServiceRequest)
                     .ThenInclude(r => r.Customer)
                 .Include(c => c.ServiceRequest)
@@ -289,13 +290,13 @@ namespace OECSMS.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task AddAsync(ContactManagerRequest request)
+        public async Task AddAsync(DomainContactManagerRequest request)
         {
             await _context.ContactManagerRequests.AddAsync(request);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(ContactManagerRequest request)
+        public async Task UpdateAsync(DomainContactManagerRequest request)
         {
             _context.ContactManagerRequests.Update(request);
             await _context.SaveChangesAsync();
