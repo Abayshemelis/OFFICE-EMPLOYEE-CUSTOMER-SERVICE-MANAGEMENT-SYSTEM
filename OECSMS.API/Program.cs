@@ -10,24 +10,38 @@ using OECSMS.Infrastructure.Hubs;
 using OECSMS.Infrastructure.Repositories;
 using OECSMS.Infrastructure.Services;
 using OECSMS.API.Middleware;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://0.0.0.0:5000"); // Explicitly bind to all interfaces on port 5000
+// builder.WebHost.UseUrls("http://0.0.0.0:5000"); // Disabled to avoid port conflicts; Kestrel will choose a free port
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Database Configuration - Use MySQL
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.Parse("8.0.30-mysql")));
 
-// JWT Authentication Configuration
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SecretKeyForOECSMSSystemAuthentication2026";
 var key = Encoding.ASCII.GetBytes(jwtKey);
+// Database Configuration – MySQL with graceful fallback to SQLite when no connection string is provided
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrWhiteSpace(connectionString))
+{
+    // Use MySQL; Pomelo will auto‑detect the server version
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+            mysql => mysql.EnableRetryOnFailure()));
+}
+else
+{
+    // Demo‑mode fallback: use a lightweight SQLite file database
+    var sqlitePath = Path.Combine(builder.Environment.ContentRootPath, "oeccms_demo.db");
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite($"Data Source={sqlitePath}"));
+}
 
+// Google OAuth client ID/secret validation will be logged at runtime if missing
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -47,6 +61,52 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"] ?? "OECSMS",
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
+    };
+})
+.AddOpenIdConnect(options =>
+{
+    options.Authority = "https://accounts.google.com";
+    options.ClientId = builder.Configuration["GoogleOAuth:ClientId"];
+    options.ClientSecret = builder.Configuration["GoogleOAuth:ClientSecret"];
+    options.ResponseType = "code";
+    // Scopes from config (default set if missing)
+    options.Scope.Clear();
+    var defaultScopes = new[] { "openid", "profile", "email" };
+    var configured = builder.Configuration.GetSection("GoogleOAuth:Scopes").Get<string[]>() ?? defaultScopes;
+    foreach (var s in configured) options.Scope.Add(s);
+    options.CallbackPath = builder.Configuration["GoogleOAuth:CallbackPath"];
+    options.SaveTokens = true;
+    options.GetClaimsFromUserInfoEndpoint = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = "accounts.google.com",
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["GoogleOAuth:ClientId"],
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+    // Add diagnostic events
+    options.Events = new OpenIdConnectEvents
+    {
+        OnTokenValidated = ctx =>
+        {
+            var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            var email = ctx.Principal?.FindFirst("email")?.Value ?? "unknown";
+            logger.LogInformation("Google token validated for {Email}", email);
+            return System.Threading.Tasks.Task.CompletedTask;
+        },
+        OnRemoteFailure = ctx =>
+        {
+            var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ctx.Failure, "Google authentication failed");
+            // Redirect to a simple error endpoint (you can change as needed)
+            var errorMsg = ctx.Failure?.Message ?? "Unknown error";
+            ctx.Response.Redirect($"/auth/google-failure?msg={Uri.EscapeDataString(errorMsg)}");
+            
+            ctx.HandleResponse();
+            return System.Threading.Tasks.Task.CompletedTask;
+        }
     };
 });
 
@@ -131,8 +191,10 @@ using (var scope = app.Services.CreateScope())
         // Check if Default Manager Account exists
         if (!context.Users.Any())
         {
+            // Seed a default manager with explicit ID
             var defaultManager = new User
             {
+                UserId = 1,
                 Username = "manager",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Manager123!", 12),
                 FullName = "System Manager",
@@ -145,10 +207,11 @@ using (var scope = app.Services.CreateScope())
 
             context.Users.Add(defaultManager);
             context.SaveChanges();
-            
-            // Seed a default assistant as well for ease of demonstration
+
+            // Seed a default assistant with explicit ID and link to manager
             var defaultAssistant = new User
             {
+                UserId = 2,
                 Username = "assistant",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Assistant123!", 12),
                 FullName = "Alice Assistant",
@@ -159,7 +222,7 @@ using (var scope = app.Services.CreateScope())
                 ManagerId = defaultManager.UserId,
                 CreatedAt = DateTime.UtcNow
             };
-            
+
             context.Users.Add(defaultAssistant);
             context.SaveChanges();
         }

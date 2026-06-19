@@ -28,7 +28,7 @@ namespace OECSMS.Infrastructure.Data
             // User configuration
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(e => e.UserId);
+                entity.Property(e => e.UserId).ValueGeneratedOnAdd();
                 entity.HasIndex(e => e.Username).IsUnique();
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.Username).HasMaxLength(100).IsRequired();

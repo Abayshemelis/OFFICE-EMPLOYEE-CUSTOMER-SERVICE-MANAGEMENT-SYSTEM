@@ -347,3 +347,4 @@ C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVIC
 C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.API\obj\Debug\net8.0\OECSMS.API.pdb
 C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.API\obj\Debug\net8.0\OECSMS.API.genruntimeconfig.cache
 C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.API\obj\Debug\net8.0\ref\OECSMS.API.dll
+C:\Users\abays\OneDrive\Documents\Documents\file\OFFICE_EMPLOYEE_CUSTOMER_SERVICE_MANAGEMENT_SYSTEM\OECSMS.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll

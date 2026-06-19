@@ -382,7 +382,7 @@ async function loadInbox() {
     }
 
     if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="padding:20px;text-align:center;" class="p">No messages in inbox.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;" class="p">No messages in inbox.</td></tr>';
         return;
     }
 
@@ -402,9 +402,10 @@ async function loadInbox() {
         tr.innerHTML = `
             <td style="font-weight:600;">${item.customerName}</td>
             <td style="font-size:13px; color:var(--text-secondary);">${item.assistantNote || '<i>No note</i>'}</td>
-            <td style="font-size:13px;">${item.customerComment || ''}</td>
+            <td style="font-size:13px;">${item.customerMessage || ''}</td>
             <td>${Utils.getStatusBadge(item.status)}</td>
-            <td><div class="actions-cell">${actionBtn}</div></td>
+            <td style="font-size:13px; color:var(--text-secondary);">${item.managerReply || '<i>No reply</i>'}</td>
+            <td style="text-align:right;"><div class="actions-cell">${actionBtn}</div></td>
         `;
         tbody.appendChild(tr);
     });

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OECSMS.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+714490243d562b2df4c80e5d6a987c2f0e055c9d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+682c01f859e927dcba48e7f6f7b9f44781ef9218")]
 [assembly: System.Reflection.AssemblyProductAttribute("OECSMS.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OECSMS.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
