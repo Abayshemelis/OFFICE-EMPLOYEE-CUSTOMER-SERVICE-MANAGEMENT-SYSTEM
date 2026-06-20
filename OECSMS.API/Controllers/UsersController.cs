@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OECSMS.Application.DTOs;
-using OECSMS.Application.Interfaces;
+using OECSMS.Contracts.DTOs;
+using OECSMS.Contracts;
 
 namespace OECSMS.API.Controllers
 {
@@ -46,7 +46,7 @@ namespace OECSMS.API.Controllers
             // Set role to Assistant explicitly if manager tries to create a user
             request.Role = "Assistant";
             var success = await _authService.RegisterAsync(request, managerId: CurrentUserId);
-            if (!success)
+            if (!success.IsSuccess)
             {
                 return ApiError("Username already exists or invalid registration details.");
             }

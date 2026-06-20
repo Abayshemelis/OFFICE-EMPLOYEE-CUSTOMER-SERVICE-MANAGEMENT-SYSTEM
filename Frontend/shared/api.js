@@ -8,8 +8,9 @@ let isMockMode = false;
 function initializeMockStorage() {
     if (!localStorage.getItem('oecsms_users')) {
         const users = [
-            { userId: 1, username: 'manager', passwordHash: 'Manager123!', fullName: 'System Manager', role: 'Manager', email: 'manager@oecsms.com', phone: '555-0100', isActive: true },
-            { userId: 2, username: 'assistant', passwordHash: 'Assistant123!', fullName: 'Alice Assistant', role: 'Assistant', email: 'alice@oecsms.com', phone: '555-0200', isActive: true, managerId: 1 }
+            { userId: 1, username: 'manager', passwordHash: 'Manager123!', fullName: 'System Manager', role: 'Manager', email: 'abay@gmail.com', phone: '555-0100', isActive: true },
+            { userId: 2, username: 'assistant', passwordHash: 'Assistant123!', fullName: 'Alice Assistant', role: 'Assistant', email: 'assistant@gamil.com', phone: '555-0200', isActive: true, managerId: 1 },
+            { userId: 3, username: 'amazi', passwordHash: 'Customer123!', fullName: 'Amazi Customer', role: 'Customer', email: 'amazi@gmail.com', phone: '555-0300', isActive: true, emailConfirmed: true }
         ];
         localStorage.setItem('oecsms_users', JSON.stringify(users));
     }
@@ -61,8 +62,10 @@ async function checkBackendStatus() {
     try {
         const response = await fetch(`${BACKEND_URL}/health`, { method: 'GET' });
         if (response.ok) {
-            isMockMode = false;
-            console.log("Connected to C# Backend API.");
+            isMockMode = true; // Force mock mode for demo
+            initializeMockStorage();
+            showModeIndicator();
+            console.log("Connected to C# Backend API (mock mode).");
         } else {
             throw new Error('Health check failed');
         }
@@ -111,22 +114,57 @@ function getHeaders() {
 
 // Universal API wrapper
 const API = {
+    get isMockMode() { return isMockMode; },
+    set isMockMode(val) { isMockMode = val; },
     // Auth endpoints
-    async loginWithGoogle(credential) {
+    async loginWithGoogle(credential, role) {
         if (isMockMode) {
-            // Mock: treat credential as email and map to demo users
-            const email = credential; // In mock, just use credential string
-            // Simple mock mapping: manager@example.com -> manager, assistant@example.com -> assistant
-            const mockUser = email.includes('manager') ? { role: 'Manager', username: 'manager', fullName: 'System Manager', token: 'mock_jwt_token_1' } : { role: 'Assistant', username: 'assistant', fullName: 'Alice Assistant', token: 'mock_jwt_token_2' };
-            localStorage.setItem('oecsms_token', mockUser.token);
-            localStorage.setItem('oecsms_current_user', JSON.stringify(mockUser));
-            return { success: true, data: mockUser };
+            const email = credential.toLowerCase();
+            const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
+            
+            // Try to find an existing user with this email
+            let user = users.find(u => u.email.toLowerCase() === email);
+            if (!user) {
+                // If not found, look up by username
+                user = users.find(u => u.username.toLowerCase() === email.split('@')[0]);
+            }
+            
+            if (!user) {
+                // Determine role: if passed, use it. Otherwise guess from email
+                let userRole = role;
+                if (!userRole) {
+                    if (email.includes('manager')) userRole = 'Manager';
+                    else if (email.includes('assistant') || email.includes('alice')) userRole = 'Assistant';
+                    else userRole = 'Customer';
+                }
+                
+                // Create mock user
+                const newId = users.length + 1;
+                user = {
+                    userId: newId,
+                    username: email.split('@')[0],
+                    passwordHash: 'GoogleLogin123!',
+                    fullName: email.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' '),
+                    role: userRole,
+                    email: email,
+                    phone: '555-0000',
+                    isActive: true,
+                    emailConfirmed: true
+                };
+                users.push(user);
+                localStorage.setItem('oecsms_users', JSON.stringify(users));
+            }
+            
+            const token = "mock_jwt_token_" + user.userId;
+            localStorage.setItem('oecsms_token', token);
+            localStorage.setItem('oecsms_current_user', JSON.stringify(user));
+            return { success: true, data: { token, username: user.username, fullName: user.fullName, role: user.role, userId: user.userId }, message: 'Success' };
         } else {
             try {
                 const res = await fetch(`${BACKEND_URL}/auth/google`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ credential })
+                    body: JSON.stringify({ credential, role })
                 });
                 const data = await res.json();
                 if (data.success && data.data) {
@@ -143,7 +181,7 @@ const API = {
         async login(username, password) {
             if (isMockMode) {
                 const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
-                const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.passwordHash === password);
+                const user = users.find(u => (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === username.toLowerCase()) && u.passwordHash === password);
                 if (user && user.isActive) {
                     const token = "mock_jwt_token_" + user.userId;
                     localStorage.setItem('oecsms_token', token);
@@ -153,10 +191,16 @@ const API = {
                 return { success: false, message: 'Invalid credentials or inactive account' };
             } else {
                 try {
-                    const res = await fetch(`${BACKEND_URL}/auth/login`, {
+                    const idToken = tokenResponse.id_token || tokenResponse.access_token;
+                    if (!idToken) {
+                        Utils.toast('Google token missing.', 'Error', 'danger');
+                        if (btn) { btn.disabled = false; btn.textContent = 'Continue with Google'; }
+                        return;
+                    }
+                    const res = await fetch(`${BACKEND_URL}/auth/google`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username, password })
+                        body: JSON.stringify({ credential: idToken })
                     });
 
                     if (!res.ok && res.status >= 500) {
@@ -761,6 +805,123 @@ const API = {
             relatedEntityId
         });
         localStorage.setItem('oecsms_notifications', JSON.stringify(notifications));
+    },
+
+    async register(fullName, username, password, email, phone, role = 'Customer') {
+        if (isMockMode) {
+            const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
+            if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+                return { success: false, message: 'Username already exists.' };
+            }
+            if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                return { success: false, message: 'Email already registered.' };
+            }
+            const newId = users.length + 1;
+            const newUser = { userId: newId, username, passwordHash: password, fullName, role: role || 'Customer', email, phone, isActive: true, emailConfirmed: false };
+            users.push(newUser);
+            localStorage.setItem('oecsms_users', JSON.stringify(users));
+
+            console.log("========== MOCK VERIFICATION EMAIL SENT ==========");
+            console.log(`To: ${email}`);
+            console.log(`Subject: Verify your OECSMS Account`);
+            console.log(`Body:\nHello ${fullName},\n\nPlease verify your account by clicking the link below:\nhttp://localhost:5000/verify.html?token=mock-token-${newId}\n\nThank you!`);
+            console.log("==================================================");
+
+            return { success: true, message: 'Registration successful. Please check your email to verify your account.' };
+        } else {
+            try {
+                const res = await fetch(`${BACKEND_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, username, password, email, phone, role })
+                });
+                return await res.json();
+            } catch (e) {
+                console.error('Registration failed', e);
+                return { success: false, message: 'Registration server error.' };
+            }
+        }
+    },
+
+    async verifyEmail(token) {
+        if (isMockMode) {
+            if (token.startsWith('mock-token-')) {
+                const userId = parseInt(token.replace('mock-token-', ''));
+                const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
+                const user = users.find(u => u.userId === userId);
+                if (user) {
+                    user.emailConfirmed = true;
+                    localStorage.setItem('oecsms_users', JSON.stringify(users));
+                    return { success: true, message: 'Email verified successfully.' };
+                }
+            }
+            return { success: false, message: 'Invalid or expired token.' };
+        } else {
+            try {
+                const res = await fetch(`${BACKEND_URL}/auth/verify-email?token=${token}`, {
+                    method: 'GET'
+                });
+                return await res.json();
+            } catch (e) {
+                console.error('Email verification failed', e);
+                return { success: false, message: 'Verification server error.' };
+            }
+        }
+    },
+
+    async forgotPassword(email) {
+        if (isMockMode) {
+            const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            if (user) {
+                console.log("========== MOCK PASSWORD RESET EMAIL SENT ==========");
+                console.log(`To: ${email}`);
+                console.log(`Subject: Reset your OECSMS Password`);
+                console.log(`Body:\nHello ${user.fullName},\n\nPlease reset your password by clicking the link below:\nhttp://localhost:5000/reset-password.html?token=mock-reset-token-${user.userId}\n\nThis link will expire in 2 hours.`);
+                console.log("====================================================");
+            }
+            return { success: true, message: 'If the email matches an account, a password reset link has been sent.' };
+        } else {
+            try {
+                const res = await fetch(`${BACKEND_URL}/auth/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                return await res.json();
+            } catch (e) {
+                console.error('Forgot password failed', e);
+                return { success: false, message: 'Server error sending password reset link.' };
+            }
+        }
+    },
+
+    async resetPassword(token, newPassword) {
+        if (isMockMode) {
+            if (token.startsWith('mock-reset-token-')) {
+                const userId = parseInt(token.replace('mock-reset-token-', ''));
+                const users = JSON.parse(localStorage.getItem('oecsms_users') || '[]');
+                const user = users.find(u => u.userId === userId);
+                if (user) {
+                    user.passwordHash = newPassword;
+                    localStorage.setItem('oecsms_users', JSON.stringify(users));
+                    return { success: true, message: 'Password reset successfully.' };
+                }
+            }
+            return { success: false, message: 'Invalid or expired token.' };
+        } else {
+            try {
+                const res = await fetch(`${BACKEND_URL}/auth/reset-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token, newPassword })
+                });
+                return await res.json();
+            } catch (e) {
+                console.error('Reset password failed', e);
+                return { success: false, message: 'Server error resetting password.' };
+            }
+        }
     }
 };
 

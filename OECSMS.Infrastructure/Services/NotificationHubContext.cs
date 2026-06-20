@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using OECSMS.Application.Interfaces;
+using OECSMS.Contracts;
+
 using OECSMS.Infrastructure.Hubs;
 using Task = System.Threading.Tasks.Task;
 

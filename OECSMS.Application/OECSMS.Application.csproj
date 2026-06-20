@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OECSMS.Domain\OECSMS.Domain.csproj" />
+    <ProjectReference Include="..\OECSMS.Contracts\OECSMS.Contracts.csproj" />
+    <ProjectReference Include="..\\OECSMS.Infrastructure\\OECSMS.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +18,9 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
 </Project>

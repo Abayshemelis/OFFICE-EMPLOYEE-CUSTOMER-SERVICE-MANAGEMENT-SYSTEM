@@ -20,6 +20,8 @@ namespace OECSMS.Infrastructure.Data
         public DbSet<ContactManagerRequest> ContactManagerRequests { get; set; } = null!;
         public DbSet<Notification> Notifications { get; set; } = null!;
         public DbSet<AssistantConductScore> AssistantConductScores { get; set; } = null!;
+        public DbSet<EmailVerification> EmailVerifications { get; set; } = null!;
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

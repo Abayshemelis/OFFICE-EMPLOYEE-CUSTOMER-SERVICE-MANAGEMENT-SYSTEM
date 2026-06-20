@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OECSMS - Verify Account</title>
+    <link rel="stylesheet" href="shared/style.css">
+    <style>
+        .verify-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .verify-card {
+            width: 100%;
+            max-width: 460px;
+            padding: 40px;
+            text-align: center;
+        }
+        .icon-container {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 32px;
+        }
+        .icon-loading {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            animation: spin 1.5s linear infinite;
+            border: 4px dashed var(--primary-color);
+        }
+        .icon-success {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success-color);
+            border: 2px solid var(--success-color);
+        }
+        .icon-error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+            border: 2px solid var(--danger-color);
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        .status-title {
+            font-size: 24px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .status-msg {
+            font-size: 15px;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-wrapper">
+        <div class="glass-panel verify-card" id="status-panel">
+            <div class="icon-container icon-loading" id="status-icon"></div>
+            <h2 class="status-title" id="status-title">Verifying Account</h2>
+            <p class="status-msg" id="status-msg">We are validating your verification link. Please wait a moment...</p>
+            <div id="action-btn-container"></div>
+        </div>
+    </div>
+
+    <script src="shared/api.js"></script>
+    <script src="shared/utils.js"></script>
+    <script>
+        async function runVerification() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            const statusIcon = document.getElementById('status-icon');
+            const statusTitle = document.getElementById('status-title');
+            const statusMsg = document.getElementById('status-msg');
+            const btnContainer = document.getElementById('action-btn-container');
+
+            if (!token) {
+                showState('error', 'Verification Failed', 'No verification token was provided in the link. Please make sure the link is complete.');
+                return;
+            }
+
+            // Wait 1.5s for beautiful premium transition feel
+            await new Promise(r => setTimeout(r, 1500));
+
+            const res = await API.verifyEmail(token);
+            if (res.success) {
+                showState('success', 'Email Verified!', 'Your account has been successfully verified. You can now log into the application.');
+            } else {
+                showState('error', 'Verification Failed', res.message || 'The verification link is invalid, has expired, or was already used.');
+            }
+        }
+
+        function showState(type, title, message) {
+            const statusIcon = document.getElementById('status-icon');
+            const statusTitle = document.getElementById('status-title');
+            const statusMsg = document.getElementById('status-msg');
+            const btnContainer = document.getElementById('action-btn-container');
+
+            statusIcon.className = 'icon-container';
+            statusIcon.style.animation = 'none';
+
+            if (type === 'success') {
+                statusIcon.classList.add('icon-success');
+                statusIcon.innerHTML = '✓';
+                statusTitle.innerText = title;
+                statusMsg.innerText = message;
+                btnContainer.innerHTML = `<button onclick="window.location.href='index.html'" class="btn btn-primary" style="width: 100%;">Go to Login</button>`;
+            } else {
+                statusIcon.classList.add('icon-error');
+                statusIcon.innerHTML = '✕';
+                statusTitle.innerText = title;
+                statusMsg.innerText = message;
+                btnContainer.innerHTML = `<button onclick="window.location.href='index.html'" class="btn btn-secondary" style="width: 100%;">Return to Login</button>`;
+            }
+        }
+
+        window.onload = runVerification;
+    </script>
+</body>
+</html>

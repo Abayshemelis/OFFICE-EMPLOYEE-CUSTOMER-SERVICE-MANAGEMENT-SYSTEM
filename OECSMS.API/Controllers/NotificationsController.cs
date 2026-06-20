@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OECSMS.Application.Interfaces;
+using OECSMS.Contracts;
 
 namespace OECSMS.API.Controllers
 {

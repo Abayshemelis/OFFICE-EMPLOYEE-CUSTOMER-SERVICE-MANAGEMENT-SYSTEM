@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistant Login - OECSMS</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="login-page">
+        <div class="glass-panel login-card">
+            <div class="logo-section">
+                <div class="logo-icon">A</div>
+                <h2>Assistant Login</h2>
+                <div class="subtitle p">Access assistant dashboard</div>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email</label>
+                    <input class="form-input" type="email" id="login-email" placeholder="Enter your email" required autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input class="form-input" type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password" />
+                    <div style="text-align: right; margin-top: 5px;">
+                        <a href="#" onclick="showSection('forgot')" style="color: var(--primary-color); font-size: 13px; text-decoration: none;">Forgot Password?</a>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Login</button>
+            </form>
+            <div class="divider">or continue with</div>
+            <button id="google-signin-btn" class="btn-google" onclick="handleGoogleSignIn()">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"/><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z" fill="#34A853"/><path d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z" fill="#FBBC05"/><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.31z" fill="#EA4335"/></svg>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+    <script src="shared/api.js"></script>
+    <script src="shared/utils.js"></script>
+    <script>
+        const FIXED_ROLE = 'Assistant';
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+
+        function handleGoogleSignIn() {
+            if (API.isMockMode || typeof google === 'undefined' || GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID') {
+                const email = prompt("Enter Google Email to simulate login as Assistant (you can enter any email):", "assistant@gamil.com");
+                if (email) {
+                    onGoogleCredential({ credential: email });
+                }
+            } else {
+                google.accounts.id.prompt();
+            }
+        }
+
+        async function onGoogleCredential(response) {
+            const btn = document.getElementById('google-signin-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+            const res = await API.loginWithGoogle(response.credential, FIXED_ROLE);
+            if (res.success) {
+                Utils.toast('Welcome, ' + res.data.fullName, 'Google Login', 'success');
+                setTimeout(() => { window.location.href = 'assistant/assistant-dashboard.html'; }, 800);
+            } else {
+                Utils.toast(res.message || 'Google login failed.', 'Google Login Error', 'danger');
+                if (btn) { btn.disabled = false; }
+            }
+        }
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const res = await API.login(email, password);
+            if (res.success) {
+                Utils.toast('Welcome, ' + res.data.fullName, 'Login Success', 'success');
+                setTimeout(() => { window.location.href = 'assistant/assistant-dashboard.html'; }, 800);
+            } else {
+                Utils.toast(res.message, 'Authentication Error', 'danger');
+            }
+        };
+        window.addEventListener('load', () => {
+            if (typeof google !== 'undefined' && google.accounts && GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID') {
+                google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential, auto_select: false });
+            }
+        });
+    </script>
+</body>
+</html>

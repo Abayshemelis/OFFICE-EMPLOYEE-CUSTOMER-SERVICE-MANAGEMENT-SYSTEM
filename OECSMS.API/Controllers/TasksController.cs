@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OECSMS.Application.DTOs;
-using OECSMS.Application.Interfaces;
+using OECSMS.Contracts.DTOs;
+using OECSMS.Contracts;
 using OECSMS.Domain.Enums;
 using DomainTaskStatus = OECSMS.Domain.Enums.TaskStatus;
 

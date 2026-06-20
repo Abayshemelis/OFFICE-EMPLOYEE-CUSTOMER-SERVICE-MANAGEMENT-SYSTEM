@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OECSMS.Application.Interfaces;
+using OECSMS.Contracts;
 using OECSMS.Application.Services;
 using OECSMS.Domain.Entities;
 using OECSMS.Infrastructure.Data;
@@ -80,7 +80,7 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = "accounts.google.com",
+        ValidIssuer = "https://accounts.google.com",
         ValidateAudience = true,
         ValidAudience = builder.Configuration["GoogleOAuth:ClientId"],
         ValidateLifetime = true,
@@ -127,6 +127,7 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICommunicationService, CommunicationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<INotificationHubContext, NotificationHubContext>();
 
 // CORS Settings - Allow all for frontend development convenience
@@ -202,6 +203,7 @@ using (var scope = app.Services.CreateScope())
                 Email = "manager@oecsms.com",
                 Phone = "555-0100",
                 IsActive = true,
+                EmailConfirmed = true,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -219,6 +221,7 @@ using (var scope = app.Services.CreateScope())
                 Email = "alice@oecsms.com",
                 Phone = "555-0200",
                 IsActive = true,
+                EmailConfirmed = true,
                 ManagerId = defaultManager.UserId,
                 CreatedAt = DateTime.UtcNow
             };

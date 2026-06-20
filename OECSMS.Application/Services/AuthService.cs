@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.IdentityModel.Tokens;
-using OECSMS.Application.DTOs;
-using OECSMS.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using OECSMS.Infrastructure.Data;
+using OECSMS.Contracts.DTOs;
+using OECSMS.Contracts;
 using OECSMS.Domain.Entities;
 using Task = System.Threading.Tasks.Task;
 
@@ -23,6 +25,8 @@ namespace OECSMS.Application.Services
         private readonly IContactManagerRequestRepository _contactRequestRepository;
         private readonly IAssistantConductScoreRepository _conductScoreRepository;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
+        private readonly AppDbContext _dbContext;
 
         public AuthService(
             IUserRepository userRepository,
@@ -30,7 +34,9 @@ namespace OECSMS.Application.Services
             IServiceRequestRepository serviceRequestRepository,
             IContactManagerRequestRepository contactRequestRepository,
             IAssistantConductScoreRepository conductScoreRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IEmailService emailService,
+            AppDbContext dbContext)
         {
             _userRepository = userRepository;
             _taskRepository = taskRepository;
@@ -38,12 +44,17 @@ namespace OECSMS.Application.Services
             _contactRequestRepository = contactRequestRepository;
             _conductScoreRepository = conductScoreRepository;
             _configuration = configuration;
+            _emailService = emailService;
+            _dbContext = dbContext;
         }
 
         public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
             var user = await _userRepository.GetByUsernameAsync(request.Username);
             if (user == null || !user.IsActive)
+                return null;
+
+            if (!user.EmailConfirmed)
                 return null;
 
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
@@ -65,6 +76,125 @@ namespace OECSMS.Application.Services
             };
         }
 
+        public async Task<LoginResponse?> LoginWithGoogleAsync(string email, string fullName, string role)
+        {
+            // Try to find existing user by email
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                // Auto-register a new user: Google has already verified the email
+                var username = email.Split('@')[0].ToLowerInvariant().Replace(".", "_");
+                // Ensure unique username by appending a number if needed
+                var baseUsername = username;
+                int suffix = 1;
+                while (await _userRepository.GetByUsernameAsync(username) != null)
+                {
+                    username = baseUsername + suffix++;
+                }
+
+                // Default role to Customer if not provided
+                var assignedRole = string.IsNullOrWhiteSpace(role) ? "Customer" : role;
+
+                user = new User
+                {
+                    Username = username,
+                    // Random password since they log in via Google; they can set one via Forgot Password
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString(), 12),
+                    FullName = fullName,
+                    Role = assignedRole,
+                    Email = email,
+                    IsActive = true,
+                    EmailConfirmed = true,   // Google already confirmed this email
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _userRepository.AddAsync(user);
+            }
+            else if (!user.IsActive)
+            {
+                return null; // Deactivated account
+            }
+            else
+            {
+                // Ensure email is confirmed for existing users (they may have registered but not confirmed)
+                if (!user.EmailConfirmed)
+                {
+                    user.EmailConfirmed = true;
+                }
+                user.LastLoginAt = DateTime.UtcNow;
+                await _userRepository.UpdateAsync(user);
+            }
+
+            var jwtToken = GenerateJwtToken(user);
+
+            return new LoginResponse
+            {
+                Token = jwtToken,
+                Username = user.Username,
+                FullName = user.FullName,
+                Role = user.Role,
+                UserId = user.UserId
+            };
+        }
+        {
+// Duplicate LoginWithGoogleAsync overload removed – role handling is in the method above
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                // Auto-register a new user: Google has already verified the email
+                var username = email.Split('@')[0].ToLowerInvariant().Replace(".", "_");
+                // Ensure unique username by appending a number if needed
+                var baseUsername = username;
+                int suffix = 1;
+                while (await _userRepository.GetByUsernameAsync(username) != null)
+                {
+                    username = baseUsername + suffix++;
+                }
+
+                user = new User
+                {
+                    Username = username,
+                    // Random password since they log in via Google; they can set one via Forgot Password
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString(), 12),
+                    FullName = fullName,
+// Duplicate overload code removed
+                    Email = email,
+                    IsActive = true,
+                    EmailConfirmed = true,   // Google already confirmed this email
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _userRepository.AddAsync(user);
+            }
+            else if (!user.IsActive)
+            {
+                return null; // Deactivated account
+            }
+            else
+            {
+                // Ensure email is confirmed for existing users (they may have registered but not confirmed)
+                if (!user.EmailConfirmed)
+                {
+                    user.EmailConfirmed = true;
+                }
+                user.LastLoginAt = DateTime.UtcNow;
+                await _userRepository.UpdateAsync(user);
+            }
+
+            var jwtToken = GenerateJwtToken(user);
+
+            return new LoginResponse
+            {
+                Token = jwtToken,
+                Username = user.Username,
+                FullName = user.FullName,
+                Role = user.Role,
+                UserId = user.UserId
+            };
+        }
+
         public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordRequest request)
         {
             var user = await _userRepository.GetByIdAsync(userId);
@@ -78,10 +208,13 @@ namespace OECSMS.Application.Services
             return true;
         }
 
-        public async Task<bool> RegisterAsync(RegisterUserRequest request, int? managerId = null)
+        public async Task<Result> RegisterAsync(RegisterUserRequest request, int? managerId = null)
         {
             var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
-            if (existingUser != null) return false;
+            if (existingUser != null) return Result.Fail("Username already exists.");
+
+            var existingEmail = await _userRepository.GetByEmailAsync(request.Email);
+            if (existingEmail != null) return Result.Fail("Email already registered.");
 
             var user = new User
             {
@@ -92,12 +225,30 @@ namespace OECSMS.Application.Services
                 Email = request.Email,
                 Phone = request.Phone,
                 IsActive = true,
+                EmailConfirmed = false,
                 ManagerId = managerId,
                 CreatedAt = DateTime.UtcNow
             };
 
             await _userRepository.AddAsync(user);
-            return true;
+
+            var token = new EmailVerification
+            {
+                UserId = user.UserId,
+                ExpiresAt = DateTime.UtcNow.AddHours(24)
+            };
+
+            await _dbContext.EmailVerifications.AddAsync(token);
+            await _dbContext.SaveChangesAsync();
+
+            var verifyUrl = $"http://localhost:5000/verify.html?token={token.Token}";
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "Verify your OECSMS Account",
+                $"Hello {user.FullName},\n\nPlease verify your account by clicking the link below:\n{verifyUrl}\n\nThank you!"
+            );
+
+            return Result.Success();
         }
 
         public async Task<bool> UpdateProfileAsync(int userId, UpdateUserRequest request)
@@ -166,6 +317,81 @@ namespace OECSMS.Application.Services
                 AverageRating = Math.Round(avgRating, 2),
                 TotalEscalations = escalations
             };
+        }
+        public async Task<Result> ConfirmEmailAsync(Guid token)
+        {
+            var verification = await _dbContext.EmailVerifications
+                .Include(ev => ev.User)
+                .FirstOrDefaultAsync(ev => ev.Token == token);
+
+            if (verification == null)
+                return Result.Fail("Invalid or expired verification token.");
+
+            if (verification.IsUsed)
+                return Result.Fail("This token has already been used.");
+
+            if (verification.ExpiresAt < DateTime.UtcNow)
+                return Result.Fail("This token has expired.");
+
+            verification.IsUsed = true;
+            verification.User.EmailConfirmed = true;
+
+            _dbContext.EmailVerifications.Update(verification);
+            await _userRepository.UpdateAsync(verification.User); // saves changes
+
+            return Result.Success();
+        }
+
+        public async Task<Result> ForgotPasswordAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                // Return success to avoid email enumeration
+                return Result.Success();
+            }
+
+            var resetToken = new PasswordResetToken
+            {
+                UserId = user.UserId,
+                ExpiresAt = DateTime.UtcNow.AddHours(2)
+            };
+
+            await _dbContext.PasswordResetTokens.AddAsync(resetToken);
+            await _dbContext.SaveChangesAsync();
+
+            var resetUrl = $"http://localhost:5000/reset-password.html?token={resetToken.Token}";
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "Reset your OECSMS Password",
+                $"Hello {user.FullName},\n\nPlease reset your password by clicking the link below:\n{resetUrl}\n\nThis link will expire in 2 hours."
+            );
+
+            return Result.Success();
+        }
+
+        public async Task<Result> ResetPasswordAsync(Guid token, string newPassword)
+        {
+            var resetToken = await _dbContext.PasswordResetTokens
+                .Include(pt => pt.User)
+                .FirstOrDefaultAsync(pt => pt.Token == token);
+
+            if (resetToken == null)
+                return Result.Fail("Invalid or expired password reset token.");
+
+            if (resetToken.IsUsed)
+                return Result.Fail("This token has already been used.");
+
+            if (resetToken.ExpiresAt < DateTime.UtcNow)
+                return Result.Fail("This token has expired.");
+
+            resetToken.IsUsed = true;
+            resetToken.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword, 12);
+
+            _dbContext.PasswordResetTokens.Update(resetToken);
+            await _userRepository.UpdateAsync(resetToken.User); // saves changes
+
+            return Result.Success();
         }
 
         private string GenerateJwtToken(User user)

@@ -17,6 +17,7 @@ namespace OECSMS.Domain.Entities
         public string Email { get; set; } = string.Empty;
         public string? Phone { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool EmailConfirmed { get; set; } = false;
         public int? ManagerId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastLoginAt { get; set; }

@@ -3,6 +3,21 @@ let currentRating = 5;
 let statusCheckInterval = null;
 let selectedNeedText = '';
 
+// Pre-fill user profile info if logged in as Customer
+window.addEventListener('DOMContentLoaded', () => {
+    const user = API.getCurrentUser();
+    if (user) {
+        const nameInput = document.getElementById('cust-name');
+        const phoneInput = document.getElementById('cust-phone');
+        if (nameInput && !nameInput.value) {
+            nameInput.value = user.fullName || '';
+        }
+        if (phoneInput && !phoneInput.value) {
+            phoneInput.value = user.phone || '';
+        }
+    }
+});
+
 function selectNeed(element, needText) {
     // Deselect all
     document.querySelectorAll('.quick-need-btn').forEach(btn => btn.classList.remove('selected'));

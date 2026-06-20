@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using OECSMS.Application.Interfaces;
+using OECSMS.Contracts;
 using OECSMS.Domain.Entities;
 using OECSMS.Domain.Enums;
 using DomainTaskStatus = OECSMS.Domain.Enums.TaskStatus;

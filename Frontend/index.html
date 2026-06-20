@@ -1,198 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OECSMS - Secure Office Login</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>OECSMS - Secure Login</title>
     <link rel="stylesheet" href="shared/style.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        .login-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 440px;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .logo-section {
-            margin-bottom: 30px;
-        }
-
-        .logo-icon {
-            width: 64px;
-            height: 64px;
-            background: var(--primary-color);
-            border-radius: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 800;
-            color: white;
-            box-shadow: 0 0 20px var(--primary-glow);
-            animation: pulse-glow 3s infinite;
-            margin-bottom: 15px;
-        }
-
-        .subtitle {
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        .demo-credentials {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--panel-border);
-            text-align: left;
-            font-size: 13px;
-        }
-
-        .demo-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .demo-item {
-            cursor: pointer;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--panel-border);
-            border-radius: 8px;
-            margin-bottom: 6px;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .demo-item:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: var(--primary-color);
-        }
-
-        .kiosk-btn {
-            margin-top: 15px;
-            width: 100%;
-        }
+        /* Page‑specific styles */
+        .login-page { height: 100vh; }
+        .login-card { width: 100%; max-width: 420px; padding: 40px; }
+        .form-input { width: 100%; }
+        .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--text-secondary); font-size: 13px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--panel-border); }
+        .show-pass { cursor: pointer; font-size: 13px; color: var(--primary-color); margin-left: auto; }
     </style>
 </head>
-
 <body>
-<div class="login-page">
-    <div id="login-section" class="login-section">
-        <div class="glass-panel login-card">
-            <div class="logo-section">
-                <div class="logo-icon">O</div>
-                <h2>OECSMS</h2>
-                <div class="subtitle p">Office Employee &amp; Customer Management</div>
+    <div class="login-page">
+        <!-- LEFT PANEL -->
+        <div class="hero-section">
+            <img src="assets/hero_image.png" alt="Office Management" class="hero-image" />
+            <div class="hero-overlay">
+                <h1>Welcome to OECSMS</h1>
+                <p>Empowering your workforce, simplifying service.</p>
             </div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
-                    <input class="form-input" type="text" id="username" placeholder="Enter your username" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input class="form-input" type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
-                </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Login</button>
-
-<button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="quickLogin('manager')">Login as Manager (Demo)</button>
-            <button class="btn btn-secondary" style="width: 100%; margin-top: 5px;" onclick="quickLogin('assistant')">Login as Assistant (Demo)</button>
-            <button class="btn btn-primary kiosk-btn" onclick="window.location.href='customer/customer-portal.html'">Open Customer Service Portal</button>
-            
-
         </div>
-    </div>
-    <div class="hero-section">
-        <img src="assets/hero_image.png" alt="Office Management Overview" class="hero-image" />
-        <div class="hero-overlay">
-            <h2>Welcome to OECSMS</h2>
-            <p>Manage employees, customers, and services efficiently.</p>
+        <!-- RIGHT PANEL -->
+        <div class="login-section">
+    <div class="glass-panel login-card">
+        <!-- Logo / Title -->
+        <div class="logo-section" style="text-align:center; margin-bottom:30px;">
+            <div class="logo-icon">O</div>
+            <h2>Welcome Back</h2>
+            <div class="subtitle p">Sign in to continue</div>
         </div>
-    </div>
 
-<!-- Sign‑Up removed, creation done in Manager dashboard -->
+        <!-- Login Form -->
+        <form id="login-form" autocomplete="off">
+            <div class="form-group">
+                <label class="form-label" for="login-email">Username or Email</label>
+                <input class="form-input" type="email" id="login-email" placeholder="Enter email" required />
+            </div>
+            <div class="form-group" style="position:relative;">
+                <label class="form-label" for="login-password">Password</label>
+                <input class="form-input" type="password" id="login-password" placeholder="Enter password" required minlength="8" />
+                <span class="show-pass" id="toggle-pass">Show</span>
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:10px;">
+                <input type="checkbox" id="remember-me" />
+                <label for="remember-me" style="color:var(--text-secondary); font-size:14px;">Remember Me</label>
+                <a href="#" onclick="showSection('forgot')" style="margin-left:auto; color:var(--primary-color); font-size:14px; text-decoration:none;">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;" id="login-btn">Login</button>
+            <div class="divider"><span>OR</span></div>
+            <button type="button" class="btn btn-google" id="google-btn" style="width:100%;" onclick="handleGoogleSignIn()">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"/><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z" fill="#34A853"/><path d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z" fill="#FBBC05"/><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.31z" fill="#EA4335"/></svg>
+                Continue with Google
+            </button>
+            <p style="margin-top:15px; text-align:center;">Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
+        </form>
+
+        <!-- Register Form (hidden) -->
+                        <form id="register-form" style="display:none;" autocomplete="off">
+            <div class="logo-section" style="text-align:center; margin-bottom:30px;">
+                <div class="logo-icon">O</div>
+                <h2>Create Account</h2>
+                <div class="subtitle p">Register as Manager, Assistant or Customer</div>
+            </div>
+            <select id="register-role" class="form-input" style="margin-bottom:15px;" required>
+                <option value="" disabled selected>Select role</option>
+                <option value="Manager">Manager</option>
+                <option value="Assistant">Assistant</option>
+                <option value="Customer">Customer</option>
+            </select>
+            <input class="form-input" type="text" id="register-name" placeholder="Full Name" required style="margin-bottom:15px;"/>
+            <input class="form-input" type="email" id="register-email" placeholder="Email" required style="margin-bottom:15px;"/>
+            <input class="form-input" type="text" id="register-phone" placeholder="Phone Number" required style="margin-bottom:15px;"/>
+            <div class="form-group" style="position:relative; margin-bottom:15px;">
+                <input class="form-input" type="password" id="register-password" placeholder="Password" required minlength="8" />
+                <span class="show-pass" id="toggle-register-pass">Show</span>
+            </div>
+            <div class="form-group" style="position:relative;">
+                <input class="form-input" type="password" id="register-confirm" placeholder="Confirm Password" required minlength="8" />
+                <span class="show-pass" id="toggle-register-confirm-pass">Show</span>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;" id="register-btn">Register</button>
+            <p style="margin-top:15px; text-align:center;">Already have an account? <a href="#" id="show-login">Login</a></p>
+        </form>
+        <div id="login-error" style="color:var(--danger-color); margin-top:10px; display:none;">Invalid credentials</div>
+    </div>
+</div>
     </div>
 
     <script src="shared/api.js"></script>
     <script src="shared/utils.js"></script>
     <script>
-        // Optional: toggle between login and signup if signup section exists
-        function toggleAuthViews() {
-            const login = document.getElementById('login-section');
-            const signup = document.getElementById('signup-section');
-            if (!login) return;
-            if (login.style.display === 'none') {
-                login.style.display = 'block';
-                if (signup) signup.style.display = 'none';
-            } else {
-                login.style.display = 'none';
-                if (signup) signup.style.display = 'block';
-            }
+    // Password toggle for login
+    const togglePass = document.getElementById('toggle-pass');
+    const pwdInput = document.getElementById('login-password');
+    togglePass.addEventListener('click', () => {
+        const type = pwdInput.type === 'password' ? 'text' : 'password';
+        pwdInput.type = type;
+        togglePass.textContent = type === 'password' ? 'Show' : 'Hide';
+    });
+
+    // Password toggle for register
+    const toggleRegPass = document.getElementById('toggle-register-pass');
+    const regPwdInput = document.getElementById('register-password');
+    if (toggleRegPass) {
+        toggleRegPass.addEventListener('click', () => {
+            const type = regPwdInput.type === 'password' ? 'text' : 'password';
+            regPwdInput.type = type;
+            toggleRegPass.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+    }
+    const toggleRegConfirmPass = document.getElementById('toggle-register-confirm-pass');
+    const regConfirmInput = document.getElementById('register-confirm');
+    if (toggleRegConfirmPass) {
+        toggleRegConfirmPass.addEventListener('click', () => {
+            const type = regConfirmInput.type === 'password' ? 'text' : 'password';
+            regConfirmInput.type = type;
+            toggleRegConfirmPass.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+    }
+
+    // Show/hide forms using style.display
+    function showLogin() {
+        console.log('showLogin called');
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+    }
+    function showRegister() {
+        console.log('showRegister called');
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+    }
+    // Attach click listeners to toggle links
+    const showRegisterLink = document.getElementById('show-register');
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showRegister(); });
+    }
+    const showLoginLink = document.getElementById('show-login');
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+    }
+
+    // Login form submission
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const loginError = document.getElementById('login-error');
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault();
+        loginError.style.display = 'none';
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing in…';
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        if (!email) { loginError.textContent = 'Email is required'; loginError.style.display = 'block'; loginBtn.disabled = false; loginBtn.textContent = 'Login'; return; }
+        if (!password) { loginError.textContent = 'Password is required'; loginError.style.display = 'block'; loginBtn.disabled = false; loginBtn.textContent = 'Login'; return; }
+        const res = await API.login(email, password);
+        if (res.success) {
+            Utils.toast('Welcome, ' + res.data.fullName, 'Login Success', 'success');
+            setTimeout(() => {
+                const role = res.data.role;
+                if (role === 'Manager') window.location.href = 'manager/manager-dashboard.html';
+                else if (role === 'Assistant') window.location.href = 'assistant/assistant-dashboard.html';
+                else window.location.href = 'customer/customer-portal.html';
+            }, 800);
+        } else {
+            loginError.textContent = res.message || 'Authentication failed';
+            loginError.style.display = 'block';
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Login';
         }
-        // Sign‑up form handling removed as signup is managed via Manager dashboard.
+    };
 
-
-        // Check if already logged in and redirect
-        const user = API.getCurrentUser();
-        if (user) {
-            redirectUser(user.role);
-        }
-
-        function redirectUser(role) {
-            if (role === 'Manager') {
-                window.location.href = 'manager/manager-dashboard.html';
-            } else if (role === 'Assistant') {
-                window.location.href = 'assistant/assistant-dashboard.html';
-            }
-        }
-
-        // Quick login for demo purposes
-        async function quickLogin(role) {
-            const demoCreds = {
-                manager: { username: 'manager', password: 'Manager123!' },
-                assistant: { username: 'assistant', password: 'Assistant123!' }
-            };
-            const creds = demoCreds[role];
-            if (creds) {
-                const res = await API.login(creds.username, creds.password);
-                if (res.success) {
-                    Utils.toast('Welcome, ' + res.data.fullName, 'Login Success', 'success');
-                    setTimeout(() => {
-                        redirectUser(res.data.role);
-                    }, 800);
-                } else {
-                    Utils.toast(res.message, 'Authentication Error', 'danger');
-                }
-            }
-        }
-
-        document.getElementById('login-form').onsubmit = async (e) => {
+    // Register form submission (placeholder implementation)
+    const registerForm = document.getElementById('register-form');
+    const registerBtn = document.getElementById('register-btn');
+    if (registerForm) {
+        registerForm.onsubmit = async (e) => {
             e.preventDefault();
-            const userVal = document.getElementById('username').value;
-            const passVal = document.getElementById('password').value;
-
-            const res = await API.login(userVal, passVal);
+            loginError.style.display = 'none';
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Signing up…';
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const phone = document.getElementById('register-phone').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            const role = document.getElementById('register-role').value;
+            if (!name) { loginError.textContent = 'Full name is required'; loginError.style.display = 'block'; registerBtn.disabled = false; registerBtn.textContent = 'Register'; return; }
+            if (!email) { loginError.textContent = 'Email is required'; loginError.style.display = 'block'; registerBtn.disabled = false; registerBtn.textContent = 'Register'; return; }
+            if (!password) { loginError.textContent = 'Password is required'; loginError.style.display = 'block'; registerBtn.disabled = false; registerBtn.textContent = 'Register'; return; }
+            if (password !== confirm) { loginError.textContent = 'Passwords do not match'; loginError.style.display = 'block'; registerBtn.disabled = false; registerBtn.textContent = 'Register'; return; }
+            if (!role) { loginError.textContent = 'Select a role'; loginError.style.display = 'block'; registerBtn.disabled = false; registerBtn.textContent = 'Register'; return; }
+            // Replace with real API call when available
+            const res = await API.register(name, email, password, email, phone, role);
             if (res.success) {
-                Utils.toast('Welcome, ' + res.data.fullName, 'Login Success', 'success');
+                Utils.toast('Account created! Please log in.', 'Registration Success', 'success');
+                showLogin();
+            } else {
+                loginError.textContent = res.message || 'Registration failed';
+                loginError.style.display = 'block';
+            }
+            registerBtn.disabled = false;
+            registerBtn.textContent = 'Register';
+        };
+    }
+
+    // Google Sign‑In
+    const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // replace with real value
+    
+    function handleGoogleSignIn() {
+        if (API.isMockMode || typeof google === 'undefined' || GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID') {
+            const email = prompt("Enter Google Email to simulate login (you can type any email you like):\n• abay@gmail.com (Manager)\n• assistant@gamil.com (Assistant)\n• amazi@gmail.com (Customer)", "abay@gmail.com");
+            if (email) {
+                onGoogleCredential({ credential: email });
+            }
+        } else {
+            google.accounts.id.prompt();
+        }
+    }
+
+    function onGoogleCredential(response) {
+        const btn = document.getElementById('google-btn');
+        btn.disabled = true;
+        btn.textContent = 'Signing in…';
+        API.loginWithGoogle(response.credential).then(res => {
+            if (res.success) {
+                Utils.toast('Welcome, ' + res.data.fullName, 'Google Login', 'success');
                 setTimeout(() => {
-                    redirectUser(res.data.role);
+                    const role = res.data.role;
+                    if (role === 'Manager') window.location.href = 'manager/manager-dashboard.html';
+                    else if (role === 'Assistant') window.location.href = 'assistant/assistant-dashboard.html';
+                    else window.location.href = 'customer/customer-portal.html';
                 }, 800);
             } else {
-                Utils.toast(res.message, 'Authentication Error', 'danger');
+                Utils.toast(res.message || 'Google login failed', 'Error', 'danger');
+                btn.disabled = false;
+                btn.textContent = 'Continue with Google';
             }
-        };
-    </script>
+        });
+    }
+    window.addEventListener('load', () => {
+        if (typeof google !== 'undefined' && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID') {
+            google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential, auto_select: false });
+            google.accounts.id.renderButton(document.getElementById('google-btn'), { theme: 'outline', size: 'large', width: '100%' });
+        }
+    });
+</script>
 
     <footer class="footer">
         <div class="footer-bg"></div>
@@ -207,11 +265,8 @@
                 <a href="mailto:abayshemelisshefraw@gmail.com" class="footer-link">abayshemelisshefraw@gmail.com</a>
                 <a href="tel:0995502317" class="footer-link">0995502317</a>
             </div>
-            <div class="footer-copy">
-                <span>© 2026 OECSMS. All rights reserved.</span>
-            </div>
+            <div class="footer-copy"><span>© 2026 OECSMS. All rights reserved.</span></div>
         </div>
     </footer>
 </body>
-
 </html>
